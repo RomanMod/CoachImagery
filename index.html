@@ -18,24 +18,24 @@
       border: 1px solid #606060;
       position: relative;
       margin: 0 auto;
-      cursor: pointer; /* Подсказка, что поле кликабельно */
+      cursor: pointer;
     }
     .match {
       position: absolute;
-      width: 60px;
-      height: 6px;
+      width: 55px; /* Новый фиксированный размер */
+      height: 5px;  /* Исходная высота */
       background: #DAA520;
       border: 1px solid #8B4513;
       transform-origin: center;
     }
     .match-head {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 10px; /* Исходный размер головки */
+      height: 10px;
       background: #FF4040;
       border-radius: 50%;
-      right: -6px;
-      top: -3px;
+      right: -5px; /* Скорректировано под размер */
+      top: -2.5px;
     }
     #result {
       display: none;
@@ -114,9 +114,9 @@
       const matchCount = parseInt(matchCountSelect.value);
 
       for (let i = 0; i < matchCount; i++) {
-        // Ограничиваем x и y, чтобы спички не выходили за края
-        const x = Math.random() * (300 - 60 - 12); // 300 - длина спички (60) - головка (12)
-        const y = Math.random() * (300 - 6 - 12);  // 300 - высота спички (6) - головка (12)
+        // Ограничиваем x и y с учётом новых размеров
+        const x = Math.random() * (300 - 55 - 10); // 300 - длина спички (55) - головка (10)
+        const y = Math.random() * (300 - 5 - 10);  // 300 - высота спички (5) - головка (10)
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
