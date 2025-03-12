@@ -12,6 +12,8 @@
       color: #D3D3D3;
       height: 100vh;
       cursor: pointer;
+      user-select: none; /* Убираем выделение текста */
+      -webkit-tap-highlight-color: transparent; /* Убираем синий фон при клике */
     }
     #game-area {
       width: 300px;
@@ -21,6 +23,8 @@
       position: relative;
       margin: 0 auto;
       cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .match {
       position: absolute;
@@ -118,9 +122,9 @@
       gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        // Отступ 20px от краёв, с учётом длины спички (55px) и головки (10px)
-        const x = 20 + Math.random() * (300 - 55 - 10 - 40); // 20px отступ слева + запас справа
-        const y = 20 + Math.random() * (300 - 5 - 10 - 40);  // 20px отступ сверху + запас снизу
+        // Учитываем поворот: максимальная длина спички с головкой ~65px
+        const x = Math.random() * (300 - 65); // 300 - (55px спичка + 10px головка)
+        const y = Math.random() * (300 - 65); // Оставляем запас для поворота
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
