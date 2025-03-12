@@ -12,8 +12,8 @@
       color: #D3D3D3;
       height: 100vh;
       cursor: pointer;
-      user-select: none; /* Убираем выделение текста */
-      -webkit-tap-highlight-color: transparent; /* Убираем синий фон при клике */
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     #game-area {
       width: 300px;
@@ -122,9 +122,9 @@
       gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        // Учитываем поворот: максимальная длина спички с головкой ~65px
-        const x = Math.random() * (300 - 65); // 300 - (55px спичка + 10px головка)
-        const y = Math.random() * (300 - 65); // Оставляем запас для поворота
+        // Учитываем поворот: максимальная длина спички с головкой ~65px + запас 5px
+        const x = Math.random() * (300 - 70); // 300 - (55px спичка + 10px головка + 5px запас)
+        const y = Math.random() * (300 - 70); // Диапазон 0–230px
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
