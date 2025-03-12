@@ -97,7 +97,7 @@
   <script>
     let matches = [];
     let matchPositions = [];
-    let gameStarted = false; // Флаг для отслеживания состояния игры
+    let gameStarted = false;
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -118,8 +118,9 @@
       gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        const x = Math.random() * (300 - 55 - 10);
-        const y = Math.random() * (300 - 5 - 10);
+        // Отступ 20px от краёв, с учётом длины спички (55px) и головки (10px)
+        const x = 20 + Math.random() * (300 - 55 - 10 - 40); // 20px отступ слева + запас справа
+        const y = 20 + Math.random() * (300 - 5 - 10 - 40);  // 20px отступ сверху + запас снизу
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
@@ -194,7 +195,7 @@
     }
 
     function resetGame(event) {
-      event.stopPropagation(); // Предотвращаем вызов handleBodyClick
+      event.stopPropagation();
       document.getElementById('result').style.display = 'none';
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
@@ -208,7 +209,6 @@
     }
 
     function handleBodyClick(event) {
-      // Проверяем, что клик не на #game-area и игра началась
       if (!event.target.closest('#game-area') && gameStarted && document.getElementById('result').style.display === 'block') {
         checkAnswers();
       }
