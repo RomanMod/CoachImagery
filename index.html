@@ -10,6 +10,8 @@
       margin: 20px;
       background: #1C2526;
       color: #D3D3D3;
+      height: 100vh;
+      cursor: pointer;
     }
     #game-area {
       width: 300px;
@@ -22,19 +24,19 @@
     }
     .match {
       position: absolute;
-      width: 55px; /* Новый фиксированный размер */
-      height: 5px;  /* Исходная высота */
+      width: 55px;
+      height: 5px;
       background: #DAA520;
       border: 1px solid #8B4513;
       transform-origin: center;
     }
     .match-head {
       position: absolute;
-      width: 10px; /* Исходный размер головки */
+      width: 10px;
       height: 10px;
       background: #FF4040;
       border-radius: 50%;
-      right: -5px; /* Скорректировано под размер */
+      right: -5px;
       top: -2.5px;
     }
     #result {
@@ -73,15 +75,15 @@
     }
   </style>
 </head>
-<body>
+<body onclick="handleBodyClick(event)">
   <h1>Запомни спички</h1>
   <div>
     <label for="match-count">Количество спичек: </label>
     <select id="match-count"></select>
   </div>
-  <div id="game-area" onclick="resetGame()"></div>
+  <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
-  <button id="new-game-btn" onclick="resetGame()" style="display: none;">Новая игра</button>
+  <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <div id="result">
     <p>Сколько спичек вверх? <input id="up" type="number" min="0" max="80"></p>
     <p>Сколько вниз? <input id="down" type="number" min="0" max="80"></p>
@@ -95,6 +97,7 @@
   <script>
     let matches = [];
     let matchPositions = [];
+    let gameStarted = false; // Флаг для отслеживания состояния игры
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -112,11 +115,11 @@
       matches = [];
       matchPositions = [];
       const matchCount = parseInt(matchCountSelect.value);
+      gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        // Ограничиваем x и y с учётом новых размеров
-        const x = Math.random() * (300 - 55 - 10); // 300 - длина спички (55) - головка (10)
-        const y = Math.random() * (300 - 5 - 10);  // 300 - высота спички (5) - головка (10)
+        const x = Math.random() * (300 - 55 - 10);
+        const y = Math.random() * (300 - 5 - 10);
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
@@ -190,7 +193,8 @@
       document.getElementById('new-game-btn').style.display = 'block';
     }
 
-    function resetGame() {
+    function resetGame(event) {
+      event.stopPropagation(); // Предотвращаем вызов handleBodyClick
       document.getElementById('result').style.display = 'none';
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
@@ -199,7 +203,15 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
+      gameStarted = false;
       startGame();
+    }
+
+    function handleBodyClick(event) {
+      // Проверяем, что клик не на #game-area и игра началась
+      if (!event.target.closest('#game-area') && gameStarted && document.getElementById('result').style.display === 'block') {
+        checkAnswers();
+      }
     }
 
     window.Telegram.WebApp.expand();
