@@ -122,9 +122,10 @@
       gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        // Учитываем поворот: максимальная длина спички с головкой ~65px + запас 5px
-        const x = Math.random() * (300 - 70); // 300 - (55px спичка + 10px головка + 5px запас)
-        const y = Math.random() * (300 - 70); // Диапазон 0–230px
+        // Для x: длина спички 55px + головка 10px + запас 5px = 70px
+        const x = Math.random() * (300 - 70); // Диапазон 0–230px
+        // Для y: максимальная длина при повороте ~65px
+        const y = Math.random() * (300 - 65); // Диапазон 0–235px
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
