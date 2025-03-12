@@ -24,6 +24,7 @@
       width: 60px;
       height: 6px;
       background: #DAA520;
+      border: 1px solid #8B4513; /* Тонкая коричневая обводка */
       transform-origin: center;
     }
     .match-head {
@@ -64,6 +65,11 @@
       color: #D3D3D3;
       border: 1px solid #808080;
     }
+    #new-game-btn {
+      position: absolute; /* Перенос в левый верхний угол */
+      top: 10px;
+      left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -74,6 +80,7 @@
   </div>
   <div id="game-area"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
+  <button id="new-game-btn" onclick="resetGame()" style="display: none;">Новая игра</button>
   <div id="result">
     <p>Сколько спичек вверх? <input id="up" type="number" min="0" max="80"></p>
     <p>Сколько вниз? <input id="down" type="number" min="0" max="80"></p>
@@ -81,7 +88,6 @@
     <p>Сколько влево? <input id="left" type="number" min="0" max="80"></p>
     <button onclick="checkAnswers()">Проверить</button>
     <p id="feedback"></p>
-    <button id="new-game-btn" onclick="resetGame()" style="display: none;">Новая игра</button>
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -180,7 +186,6 @@
       });
 
       document.getElementById('new-game-btn').style.display = 'block';
-      window.Telegram.WebApp.sendData(`Результат: вверх ${up}, вниз ${down}, вправо ${right}, влево ${left}`);
     }
 
     function resetGame() {
