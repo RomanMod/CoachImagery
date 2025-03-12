@@ -18,13 +18,14 @@
       border: 1px solid #606060;
       position: relative;
       margin: 0 auto;
+      cursor: pointer; /* Подсказка, что поле кликабельно */
     }
     .match {
       position: absolute;
       width: 60px;
       height: 6px;
       background: #DAA520;
-      border: 1px solid #8B4513; /* Тонкая коричневая обводка */
+      border: 1px solid #8B4513;
       transform-origin: center;
     }
     .match-head {
@@ -66,7 +67,7 @@
       border: 1px solid #808080;
     }
     #new-game-btn {
-      position: absolute; /* Перенос в левый верхний угол */
+      position: absolute;
       top: 10px;
       left: 10px;
     }
@@ -78,7 +79,7 @@
     <label for="match-count">Количество спичек: </label>
     <select id="match-count"></select>
   </div>
-  <div id="game-area"></div>
+  <div id="game-area" onclick="resetGame()"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame()" style="display: none;">Новая игра</button>
   <div id="result">
@@ -113,9 +114,10 @@
       const matchCount = parseInt(matchCountSelect.value);
 
       for (let i = 0; i < matchCount; i++) {
+        // Ограничиваем x и y, чтобы спички не выходили за края
+        const x = Math.random() * (300 - 60 - 12); // 300 - длина спички (60) - головка (12)
+        const y = Math.random() * (300 - 6 - 12);  // 300 - высота спички (6) - головка (12)
         const angle = Math.random() * 360;
-        const x = Math.random() * 240;
-        const y = Math.random() * 240;
         const zIndex = Math.floor(Math.random() * matchCount);
 
         const match = document.createElement('div');
