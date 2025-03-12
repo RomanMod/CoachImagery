@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Игра со спичками</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #1C2526;
+      color: #D3D3D3;
+    }
+    #game-area {
+      width: 300px;
+      height: 300px;
+      background: #A9A9A9;
+      border: 1px solid #606060;
+      position: relative;
+      margin: 0 auto;
+    }
+    .match {
+      position: absolute;
+      width: 60px;
+      height: 6px;
+      background: #DAA520;
+      transform-origin: center;
+    }
+    .match-head {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #FF4040;
+      border-radius: 50%;
+      right: -6px;
+      top: -3px;
+    }
+    #result {
+      display: none;
+      margin-top: 20px;
+    }
+    .correct { color: #00FF00; }
+    .incorrect { color: #FF0000; }
+    button {
+      padding: 10px 20px;
+      background: #606060;
+      color: #D3D3D3;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #808080;
+    }
+    input[type="number"] {
+      background: #606060;
+      color: #FFFFFF;
+      border: 1px solid #808080;
+      padding: 5px;
+      width: 50px;
+    }
+    select {
+      padding: 5px;
+      background: #606060;
+      color: #D3D3D3;
+      border: 1px solid #808080;
+    }
+  </style>
+</head>
+<body>
+  <h1>Запомни спички</h1>
+  <div>
+    <label for="match-count">Количество спичек: </label>
+    <select id="match-count"></select>
+  </div>
+  <div id="game-area"></div>
+  <button id="start-btn" onclick="startGame()">Начать</button>
+  <div id="result">
+    <p>Сколько спичек вверх? <input id="up" type="number" min="0" max="80"></p>
+    <p>Сколько вниз? <input id="down" type="number" min="0" max="80"></p>
+    <p>Сколько вправо? <input id="right" type="number" min="0" max="80"></p>
+    <p>Сколько влево? <input id="left" type="number" min="0" max="80"></p>
+    <button onclick="checkAnswers()">Проверить</button>
+    <p id="feedback"></p>
+    <button id="new-game-btn" onclick="resetGame()" style="display: none;">Новая игра</button>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    let matches = [];
+    let matchPositions = [];
+
+    const matchCountSelect = document.getElementById('match-count');
+    for (let i = 3; i <= 80; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.text = i;
+      if (i === 3) option.selected = true;
+      matchCountSelect.appendChild(option);
+    }
+
+    function startGame() {
+      document.getElementById('start-btn').style.display = 'none';
+      const gameArea = document.getElementById('game-area');
+      gameArea.innerHTML = '';
+      matches = [];
+      matchPositions = [];
+      const matchCount = parseInt(matchCountSelect.value);
+
+      for (let i = 0; i < matchCount; i++) {
+        const angle = Math.random() * 360;
+        const x = Math.random() * 240;
+        const y = Math.random() * 240;
+        const zIndex = Math.floor(Math.random() * matchCount);
+
+        const match = document.createElement('div');
+        match.className = 'match';
+        match.style.left = x + 'px';
+        match.style.top = y + 'px';
+        match.style.transform = `rotate(${angle}deg)`;
+        match.style.zIndex = zIndex;
+
+        const head = document.createElement('div');
+        head.className = 'match-head';
+
+        match.appendChild(head);
+        gameArea.appendChild(match);
+
+        let direction = '';
+        if (angle >= 45 && angle < 135) direction = 'down';
+        else if (angle >= 135 && angle < 225) direction = 'left';
+        else if (angle >= 225 && angle < 315) direction = 'up';
+        else direction = 'right';
+
+        matches.push(direction);
+        matchPositions.push({ x, y, angle, zIndex });
+      }
+
+      setTimeout(() => {
+        gameArea.innerHTML = '';
+        document.getElementById('result').style.display = 'block';
+      }, 3000);
+    }
+
+    function checkAnswers() {
+      const up = parseInt(document.getElementById('up').value) || 0;
+      const down = parseInt(document.getElementById('down').value) || 0;
+      const right = parseInt(document.getElementById('right').value) || 0;
+      const left = parseInt(document.getElementById('left').value) || 0;
+
+      const actual = {
+        up: matches.filter(d => d === 'up').length,
+        down: matches.filter(d => d === 'down').length,
+        right: matches.filter(d => d === 'right').length,
+        left: matches.filter(d => d === 'left').length
+      };
+
+      let feedback = `
+        Вверх: <span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span><br>
+        Вниз: <span class="${down === actual.down ? 'correct' : 'incorrect'}">${actual.down}</span><br>
+        Вправо: <span class="${right === actual.right ? 'correct' : 'incorrect'}">${actual.right}</span><br>
+        Влево: <span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span>
+      `;
+      document.getElementById('feedback').innerHTML = feedback;
+
+      const gameArea = document.getElementById('game-area');
+      gameArea.innerHTML = '';
+      matchPositions.forEach(pos => {
+        const match = document.createElement('div');
+        match.className = 'match';
+        match.style.left = pos.x + 'px';
+        match.style.top = pos.y + 'px';
+        match.style.transform = `rotate(${pos.angle}deg)`;
+        match.style.zIndex = pos.zIndex;
+
+        const head = document.createElement('div');
+        head.className = 'match-head';
+
+        match.appendChild(head);
+        gameArea.appendChild(match);
+      });
+
+      document.getElementById('new-game-btn').style.display = 'block';
+      window.Telegram.WebApp.sendData(`Результат: вверх ${up}, вниз ${down}, вправо ${right}, влево ${left}`);
+    }
+
+    function resetGame() {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('new-game-btn').style.display = 'none';
+      document.getElementById('start-btn').style.display = 'block';
+      document.getElementById('feedback').innerHTML = '';
+      document.getElementById('up').value = '';
+      document.getElementById('down').value = '';
+      document.getElementById('right').value = '';
+      document.getElementById('left').value = '';
+      startGame();
+    }
+
+    window.Telegram.WebApp.expand();
+  </script>
+</body>
+</html>
