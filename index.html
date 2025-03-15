@@ -99,18 +99,20 @@
       text-align: left;
       font-size: 14px;
       background: #2C3536;
-      padding: 30px 10px 10px 10px; /* Увеличиваем верхний padding для кнопки */
+      padding: 40px 10px 10px 10px; /* Больше места сверху для кнопки */
       border-radius: 5px;
       white-space: pre-wrap;
       position: relative;
     }
-    #rules.open #rules-btn {
+    #rules #rules-btn { /* Стили кнопки внутри окна */
       position: absolute;
       top: 5px;
       right: 5px;
-      padding: 5px 10px; /* Уменьшаем размер кнопки в окне */
+      padding: 4px 8px; /* Очень маленький размер */
+      font-size: 12px;
       margin: 0;
-      font-size: 12px; /* Уменьшаем шрифт для компактности */
+      background: #808080; /* Отличаем от фона окна */
+      border-radius: 3px;
     }
   </style>
 </head>
@@ -190,7 +192,6 @@
       const rulesBtn = document.getElementById('rules-btn');
       if (rules.style.display === 'block') {
         rules.style.display = 'none';
-        rules.classList.remove('open');
         document.body.appendChild(rulesBtn);
         rulesBtn.style.position = 'absolute';
         rulesBtn.style.bottom = '10px';
@@ -199,7 +200,6 @@
         rulesBtn.style.top = '';
       } else {
         rules.style.display = 'block';
-        rules.classList.add('open');
         rules.appendChild(rulesBtn);
         rulesBtn.style.position = 'absolute';
         rulesBtn.style.top = '5px';
