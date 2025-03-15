@@ -24,6 +24,22 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
+    h1 {
+      cursor: pointer;
+    }
+    h1:hover {
+      color: #FFFFFF;
+    }
+    #rules {
+      display: none; /* Скрыто по умолчанию */
+      margin: 20px auto;
+      max-width: 300px;
+      text-align: left;
+      font-size: 14px;
+      background: #2C3536;
+      padding: 10px;
+      border-radius: 5px;
+    }
     #game-area {
       width: 300px;
       height: 300px;
@@ -86,16 +102,10 @@
       top: 10px;
       left: 10px;
     }
-    #rules {
-      margin: 20px auto;
-      max-width: 300px;
-      text-align: left;
-      font-size: 14px;
-    }
   </style>
 </head>
 <body>
-  <h1>Запомни спички</h1>
+  <h1 onclick="toggleRules()">Запомни спички</h1>
   <div id="rules">
     <p><strong>Правила игры:</strong></p>
     <p>1. Выбери количество спичек и нажми "Начать".</p>
@@ -133,6 +143,11 @@
       option.text = i;
       if (i === 3) option.selected = true;
       matchCountSelect.appendChild(option);
+    }
+
+    function toggleRules() {
+      const rules = document.getElementById('rules');
+      rules.style.display = rules.style.display === 'block' ? 'none' : 'block';
     }
 
     function startGame() {
