@@ -90,7 +90,7 @@
     #rules-btn {
       position: absolute;
       bottom: 10px;
-      left: 10px;
+      left: 10px; /* Изначально в левом углу */
     }
     #rules {
       display: none;
@@ -101,7 +101,7 @@
       background: #2C3536;
       padding: 10px;
       border-radius: 5px;
-      white-space: pre-wrap; /* Адаптивный текст с сохранением схемы */
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -178,7 +178,16 @@
 
     function toggleRules() {
       const rules = document.getElementById('rules');
-      rules.style.display = rules.style.display === 'block' ? 'none' : 'block';
+      const rulesBtn = document.getElementById('rules-btn');
+      if (rules.style.display === 'block') {
+        rules.style.display = 'none';
+        rulesBtn.style.left = '10px'; // Возвращаем в левый угол
+        rulesBtn.style.right = ''; // Убираем правую позицию
+      } else {
+        rules.style.display = 'block';
+        rulesBtn.style.left = ''; // Убираем левую позицию
+        rulesBtn.style.right = '10px'; // Сдвигаем в правый угол
+      }
     }
 
     function startGame() {
