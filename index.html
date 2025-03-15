@@ -86,10 +86,24 @@
       top: 10px;
       left: 10px;
     }
+    #rules {
+      margin: 20px auto;
+      max-width: 300px;
+      text-align: left;
+      font-size: 14px;
+    }
   </style>
 </head>
-<body onclick="handleBodyClick(event)">
+<body>
   <h1>Запомни спички</h1>
+  <div id="rules">
+    <p><strong>Правила игры:</strong></p>
+    <p>1. Выбери количество спичек и нажми "Начать".</p>
+    <p>2. Запомни расположение спичек (у тебя 3 секунды).</p>
+    <p>3. Укажи, сколько спичек было вверх, вниз, вправо и влево.</p>
+    <p>4. Нажми "Проверить", чтобы узнать результат.</p>
+    <p>5. Кликни по полю для новой игры.</p>
+  </div>
   <div>
     <label for="match-count">Количество спичек: </label>
     <select id="match-count"></select>
@@ -159,7 +173,6 @@
         matchPositions.push({ x, y, angle, zIndex });
       }
 
-      // Отправляем событие в Google Analytics
       gtag('event', 'game_start', { 'match_count': matchCount });
 
       setTimeout(() => {
@@ -206,7 +219,6 @@
         gameArea.appendChild(match);
       });
 
-      // Отправляем событие в Google Analytics
       gtag('event', 'check_answers');
 
       document.getElementById('new-game-btn').style.display = 'block';
@@ -224,12 +236,6 @@
       document.getElementById('left').value = '';
       gameStarted = false;
       startGame();
-    }
-
-    function handleBodyClick(event) {
-      if (!event.target.closest('#game-area') && gameStarted && document.getElementById('result').style.display === 'block') {
-        checkAnswers();
-      }
     }
 
     window.Telegram.WebApp.expand();
