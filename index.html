@@ -30,7 +30,7 @@
       background: #A9A9A9;
       border: 1px solid #606060;
       position: relative;
-      margin: 0 auto;
+      margin: 20px auto;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -84,11 +84,16 @@
     }
     #new-game-btn {
       position: absolute;
-      top: 10px;
+      top: 60px;
+      left: 10px;
+    }
+    #rules-btn {
+      position: absolute;
+      bottom: 10px;
       left: 10px;
     }
     #rules {
-      display: none; /* Скрыто по умолчанию */
+      display: none;
       margin: 20px auto;
       max-width: 300px;
       text-align: left;
@@ -96,7 +101,7 @@
       background: #2C3536;
       padding: 10px;
       border-radius: 5px;
-      white-space: pre; /* Сохраняем пробелы и переносы для схемы */
+      white-space: pre-wrap; /* Адаптивный текст с сохранением схемы */
     }
   </style>
 </head>
@@ -108,17 +113,17 @@
   </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
-  <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
+  <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <div id="rules">
     <p><strong>Правила игры:</strong></p>
     <p>1. Выбери количество спичек и нажми "Начать".</p>
     <p>2. Запомни направления спичек за 3 секунды.</p>
-    <p>3. Укажи, сколько спичек смотрит вверх, вниз, вправо, влево.</p>
+    <p>3. Укажи, сколько головок смотрит вверх, вниз, вправо, влево.</p>
     <p>4. Нажми "Проверить" для результата.</p>
     <p>5. Кликни по полю для новой игры.</p>
     <p><strong>Направления спичек:</strong></p>
-    <p>Головка спички (красный круг) указывает направление:</p>
+    <p>Головка (красный круг) указывает направление:</p>
     <pre>
         270° (Вверх)
            ↑
