@@ -99,20 +99,25 @@
       text-align: left;
       font-size: 14px;
       background: #2C3536;
-      padding: 40px 10px 10px 10px; /* Больше места сверху для кнопки */
+      padding: 40px 10px 10px 10px;
       border-radius: 5px;
       white-space: pre-wrap;
       position: relative;
     }
-    #rules #rules-btn { /* Стили кнопки внутри окна */
+    #close-rules-btn {
       position: absolute;
       top: 5px;
       right: 5px;
-      padding: 4px 8px; /* Очень маленький размер */
+      padding: 4px 8px;
       font-size: 12px;
-      margin: 0;
-      background: #808080; /* Отличаем от фона окна */
+      background: #808080;
+      color: #D3D3D3;
+      border: none;
       border-radius: 3px;
+      cursor: pointer;
+    }
+    #close-rules-btn:hover {
+      background: #A0A0A0;
     }
   </style>
 </head>
@@ -127,6 +132,7 @@
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <div id="rules">
+    <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <p><strong>Правила игры:</strong></p>
     <p>1. Выбери количество спичек и нажми "Начать".</p>
     <p>2. Запомни направления спичек за 3 секунды.</p>
@@ -189,23 +195,10 @@
 
     function toggleRules() {
       const rules = document.getElementById('rules');
-      const rulesBtn = document.getElementById('rules-btn');
       if (rules.style.display === 'block') {
         rules.style.display = 'none';
-        document.body.appendChild(rulesBtn);
-        rulesBtn.style.position = 'absolute';
-        rulesBtn.style.bottom = '10px';
-        rulesBtn.style.left = '10px';
-        rulesBtn.style.right = '';
-        rulesBtn.style.top = '';
       } else {
         rules.style.display = 'block';
-        rules.appendChild(rulesBtn);
-        rulesBtn.style.position = 'absolute';
-        rulesBtn.style.top = '5px';
-        rulesBtn.style.right = '5px';
-        rulesBtn.style.bottom = '';
-        rulesBtn.style.left = '';
         gtag('event', 'view_rules');
       }
     }
