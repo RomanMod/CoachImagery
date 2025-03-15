@@ -90,7 +90,7 @@
     #rules-btn {
       position: absolute;
       bottom: 10px;
-      left: 10px; /* Изначально в левом углу */
+      left: 10px; /* Изначально внизу слева */
     }
     #rules {
       display: none;
@@ -102,6 +102,14 @@
       padding: 10px;
       border-radius: 5px;
       white-space: pre-wrap;
+      position: relative; /* Для позиционирования кнопки внутри */
+    }
+    #rules.open #rules-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 5px 10px; /* Уменьшаем кнопку в окне */
+      margin: 0;
     }
   </style>
 </head>
@@ -181,12 +189,22 @@
       const rulesBtn = document.getElementById('rules-btn');
       if (rules.style.display === 'block') {
         rules.style.display = 'none';
-        rulesBtn.style.left = '10px'; // Возвращаем в левый угол
-        rulesBtn.style.right = ''; // Убираем правую позицию
+        rules.classList.remove('open');
+        document.body.appendChild(rulesBtn); // Возвращаем кнопку в body
+        rulesBtn.style.position = 'absolute';
+        rulesBtn.style.bottom = '10px';
+        rulesBtn.style.left = '10px';
+        rulesBtn.style.right = '';
+        rulesBtn.style.top = '';
       } else {
         rules.style.display = 'block';
-        rulesBtn.style.left = ''; // Убираем левую позицию
-        rulesBtn.style.right = '10px'; // Сдвигаем в правый угол
+        rules.classList.add('open');
+        rules.appendChild(rulesBtn); // Перемещаем кнопку в #rules
+        rulesBtn.style.position = 'absolute';
+        rulesBtn.style.top = '5px';
+        rulesBtn.style.right = '5px';
+        rulesBtn.style.bottom = '';
+        rulesBtn.style.left = '';
       }
     }
 
