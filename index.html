@@ -159,6 +159,9 @@
         matchPositions.push({ x, y, angle, zIndex });
       }
 
+      // Отправляем событие в Google Analytics
+      gtag('event', 'game_start', { 'match_count': matchCount });
+
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('result').style.display = 'block';
@@ -202,6 +205,9 @@
         match.appendChild(head);
         gameArea.appendChild(match);
       });
+
+      // Отправляем событие в Google Analytics
+      gtag('event', 'check_answers');
 
       document.getElementById('new-game-btn').style.display = 'block';
     }
