@@ -5,10 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
       - name: Delete file
         run: |
-          git rm analytics.js
-          git commit -m "Удалил файл analytics.js"
-          git push
+          if [ -e analytics.js ]; then
+            git rm analytics.js
+            git commit -m "Удалил файл analytics.js"
+            git push origin main
+          else
+            echo "Файл analytics.js не найден, ничего не удаляю."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
