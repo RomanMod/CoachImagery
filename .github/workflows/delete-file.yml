@@ -1,0 +1,14 @@
+name: Delete file
+on: workflow_dispatch
+jobs:
+  delete-file:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Delete file
+        run: |
+          git rm analytics.js
+          git commit -m "Удалил файл analytics.js"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
