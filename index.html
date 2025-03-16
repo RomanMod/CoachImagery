@@ -283,47 +283,29 @@
       const matchCount = parseInt(matchCountSelect.value);
       gameStarted = true;
 
-      const gridSize = Math.ceil(Math.sqrt(matchCount));
-      const cellSize = 300 / gridSize;
-      const positions = [];
-
-      for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
-          let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
-          let y = row * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
-          x = Math.max(0 + 10, Math.min(300 - 65, x));
-          y = Math.max(0 + 10, Math.min(300 - 65, y));
-          positions.push({ x, y });
-        }
-      }
-
-      for (let i = positions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [positions[i], positions[j]] = [positions[j], positions[i]];
-      }
-
       const placedPositions = [];
       for (let i = 0; i < matchCount; i++) {
-        let pos = positions[i];
-        let x = pos.x;
-        let y = pos.y;
-        let angle = Math.random() * 360;
-        const zIndex = Math.floor(Math.random() * matchCount);
+        let x, y, angle, validPosition = false;
 
-        let tooClose = false;
-        for (let j = 0; j < placedPositions.length; j++) {
-          const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
-          if (dist < 20) {
-            tooClose = true;
-            break;
-          }
-        }
+        // Генерируем случайные координаты с учётом границ
+        for (let attempt = 0; attempt < 50; attempt++) {
+          x = Math.random() * (300 - 65) + 10; // От 10 до 235 (учитываем длину 55px)
+          y = Math.random() * (300 - 65) + 10;
+          angle = Math.random() * 360;
+          const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
+          const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
+          const headX = x + headOffsetX;
+          const headY = y + headOffsetY;
 
-        if (tooClose) {
-          for (let attempt = 0; attempt < 10; attempt++) {
-            x = positions[(i + attempt) % positions.length].x;
-            y = positions[(i + attempt) % positions.length].y;
-            tooClose = false;
+          // Проверяем границы
+          if (
+            x >= 10 && x <= 290 &&
+            y >= 10 && y <= 290 &&
+            headX >= 10 && headX <= 290 &&
+            headY >= 10 && headY <= 290
+          ) {
+            // Проверяем пересечения
+            let tooClose = false;
             for (let j = 0; j < placedPositions.length; j++) {
               const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
               if (dist < 20) {
@@ -331,46 +313,19 @@
                 break;
               }
             }
-            if (!tooClose) break;
+            if (!tooClose) {
+              validPosition = true;
+              break;
+            }
           }
-        }
-
-        let validPosition = false;
-        for (let attempt = 0; attempt < 10; attempt++) {
-          const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
-          const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
-          const centerOffsetX = headOffsetX / 2;
-          const centerOffsetY = headOffsetY / 2;
-          const leftX = x;
-          const leftY = y;
-          const headX = x + headOffsetX;
-          const headY = y + headOffsetY;
-
-          if (
-            (leftX >= 10 && leftX <= 290) &&
-            (leftY >= 10 && leftY <= 290) &&
-            (headX >= 10 && headX <= 290) &&
-            (headY >= 10 && headY <= 290)
-          ) {
-            validPosition = true;
-            break;
-          }
-
-          if (leftX < 10) x += (10 - leftX);
-          if (leftX > 290) x -= (leftX - 290);
-          if (leftY < 10) y += (10 - leftY);
-          if (leftY > 290) y -= (leftY - 290);
-          if (headX < 10) x += (10 - headX);
-          if (headX > 290) x -= (headX - 290);
-          if (headY < 10) y += (10 - headY);
-          if (headY > 290) y -= (headY - 290);
         }
 
         if (!validPosition) {
-          x = 150;
+          x = 150; // Центр, если не удалось найти позицию
           y = 150;
         }
 
+        const zIndex = Math.floor(Math.random() * matchCount);
         const match = document.createElement('div');
         match.className = 'match';
         if (shadowEnabled) match.classList.add('with-shadow');
@@ -381,7 +336,6 @@
 
         const head = document.createElement('div');
         head.className = 'match-head';
-
         match.appendChild(head);
         gameArea.appendChild(match);
 
@@ -478,7 +432,6 @@
 
         const head = document.createElement('div');
         head.className = 'match-head';
-
         match.appendChild(head);
         gameArea.appendChild(match);
       });
