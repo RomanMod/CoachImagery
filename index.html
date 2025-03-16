@@ -42,7 +42,7 @@
       background: #DAA520;
       border: 1px solid #8B4513;
       transform-origin: center;
-      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Добавляем тень */
     }
     .match-head {
       position: absolute;
@@ -270,7 +270,7 @@
       gameStarted = true;
 
       // Создаём виртуальную сетку для равномерного распределения
-      const gridSize = Math.ceil(Math.sqrt(matchCount) * 1.2); // Увеличиваем плотность сетки
+      const gridSize = Math.ceil(Math.sqrt(matchCount));
       const cellSize = 300 / gridSize;
       const positions = [];
 
@@ -279,7 +279,7 @@
         for (let col = 0; col < gridSize; col++) {
           let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
           let y = row * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
-          x = Math.max(0 + 10, Math.min(300 - 65, x));
+          x = Math.max(0 + 10, Math.min(300 - 65, x)); // Увеличиваем отступ до 10px
           y = Math.max(0 + 10, Math.min(300 - 65, y));
           positions.push({ x, y });
         }
@@ -291,9 +291,8 @@
         [positions[i], positions[j]] = [positions[j], positions[i]];
       }
 
-      // Размещаем спички с проверкой на пересечения и баланс нижней части
+      // Размещаем спички с проверкой на пересечения
       const placedPositions = [];
-      let lowerHalfCount = 0;
       for (let i = 0; i < matchCount; i++) {
         let pos = positions[i];
         let x = pos.x;
@@ -301,7 +300,7 @@
         let angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
-        // Проверка на минимальное расстояние (20px)
+        // Проверка на минимальное расстояние (20px) от других спичек
         let tooClose = false;
         for (let j = 0; j < placedPositions.length; j++) {
           const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -311,12 +310,11 @@
           }
         }
 
-        // Если слишком близко или нижняя часть недостаточно заполнена, корректируем
-        if (tooClose || (y < 150 && lowerHalfCount < matchCount / 2)) {
+        // Если слишком близко, пробуем другую позицию
+        if (tooClose) {
           for (let attempt = 0; attempt < 10; attempt++) {
             x = positions[(i + attempt) % positions.length].x;
             y = positions[(i + attempt) % positions.length].y;
-            if (y > 150) y = Math.max(150, y); // Смещаем вниз, если в верхней половине
             tooClose = false;
             for (let j = 0; j < placedPositions.length; j++) {
               const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -357,50 +355,6 @@
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
         placedPositions.push({ x, y });
-        if (y > 150) lowerHalfCount++; // Считаем спички в нижней половине
-      }
-
-      // Если нижняя половина недостаточно заполнена, добавляем спички
-      while (lowerHalfCount < matchCount / 2 && placedPositions.length < positions.length) {
-        let pos = positions[placedPositions.length];
-        let x = pos.x;
-        let y = Math.max(150, pos.y); // Принудительно в нижнюю половину
-        let angle = Math.random() * 360;
-        const zIndex = Math.floor(Math.random() * matchCount);
-
-        let tooClose = false;
-        for (let j = 0; j < placedPositions.length; j++) {
-          const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
-          if (dist < 20) {
-            tooClose = true;
-            break;
-          }
-        }
-        if (!tooClose) {
-          const match = document.createElement('div');
-          match.className = 'match';
-          match.style.left = x + 'px';
-          match.style.top = y + 'px';
-          match.style.transform = `rotate(${angle}deg)`;
-          match.style.zIndex = zIndex;
-
-          const head = document.createElement('div');
-          head.className = 'match-head';
-
-          match.appendChild(head);
-          gameArea.appendChild(match);
-
-          let direction = '';
-          if (angle >= 45 && angle < 135) direction = 'down';
-          else if (angle >= 135 && angle < 225) direction = 'left';
-          else if (angle >= 225 && angle < 315) direction = 'up';
-          else direction = 'right';
-
-          matches.push(direction);
-          matchPositions.push({ x, y, angle, zIndex });
-          placedPositions.push({ x, y });
-          lowerHalfCount++;
-        }
       }
 
       gtag('event', 'game_start', { 'match_count': matchCount });
