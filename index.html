@@ -90,8 +90,8 @@
     }
     #new-game-btn {
       position: absolute;
-      top: 60px;
-      left: 10px;
+      top: 10px; /* Уменьшаем отступ сверху для прижима к верхнему краю */
+      left: 10px; /* Оставляем небольшой отступ слева */
     }
     #rules-btn {
       position: absolute;
@@ -225,6 +225,7 @@
       <button onclick="addNumber('7')">7</button>
       <button onclick="addNumber('8')">8</button>
       <button onclick="addNumber('9')">9</button>
+      <button onclick="addNumber('0')">0</button>
       <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
