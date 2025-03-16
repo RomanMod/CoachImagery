@@ -27,7 +27,7 @@
     #game-area {
       width: 300px;
       height: 300px;
-      background: #666666; /* Затемнённый фон вместо #A9A9A9 */
+      background: #666666;
       border: 1px solid #606060;
       position: relative;
       margin: 20px auto;
@@ -75,6 +75,7 @@
       border: 1px solid #808080;
       padding: 5px;
       width: 50px;
+      text-align: center;
     }
     select {
       padding: 5px;
@@ -118,6 +119,38 @@
     }
     #close-rules-btn:hover {
       background: #A0A0A0;
+    }
+    #custom-keyboard {
+      display: none;
+      margin: 10px auto;
+      width: 300px;
+      background: #2C3536;
+      padding: 10px;
+      border-radius: 5px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+    #custom-keyboard button {
+      padding: 15px;
+      font-size: 16px;
+      background: #606060;
+      color: #D3D3D3;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #custom-keyboard button:hover {
+      background: #808080;
+    }
+    #custom-keyboard .delete-btn {
+      background: #A04040;
+    }
+    #custom-keyboard .delete-btn:hover {
+      background: #C05050;
+    }
+    input.active {
+      border: 2px solid #DAA520; /* Подсветка активного поля */
     }
   </style>
 </head>
@@ -174,10 +207,23 @@
     <p><strong>Рекомендации:</strong> В день делать много повторов. Если получается удержать картинку на мгновение, сделай минимум 60 повторов. Первый этап — удерживать картинку во внутреннем взоре минуту.</p>
   </div>
   <div id="result">
-    <p>Сколько спичек вверх? <input id="up" type="number" min="0" max="80"></p>
-    <p>Сколько вниз? <input id="down" type="number" min="0" max="80"></p>
-    <p>Сколько вправо? <input id="right" type="number" min="0" max="80"></p>
-    <p>Сколько влево? <input id="left" type="number" min="0" max="80"></p>
+    <p>Сколько спичек вверх? <input id="up" type="number" readonly></p>
+    <p>Сколько вниз? <input id="down" type="number" readonly></p>
+    <p>Сколько вправо? <input id="right" type="number" readonly></p>
+    <p>Сколько влево? <input id="left" type="number" readonly></p>
+    <div id="custom-keyboard">
+      <button onclick="addNumber('1')">1</button>
+      <button onclick="addNumber('2')">2</button>
+      <button onclick="addNumber('3')">3</button>
+      <button onclick="addNumber('4')">4</button>
+      <button onclick="addNumber('5')">5</button>
+      <button onclick="addNumber('6')">6</button>
+      <button onclick="addNumber('7')">7</button>
+      <button onclick="addNumber('8')">8</button>
+      <button onclick="addNumber('9')">9</button>
+      <button onclick="addNumber('0')">0</button>
+      <button onclick="deleteNumber()" class="delete-btn">⌫</button>
+    </div>
     <button onclick="checkAnswers()">Проверить</button>
     <p id="feedback"></p>
   </div>
@@ -187,6 +233,7 @@
     let matches = [];
     let matchPositions = [];
     let gameStarted = false;
+    let activeInput = null;
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -197,16 +244,17 @@
       matchCountSelect.appendChild(option);
     }
 
-    function toggleRules() {
-      const rules = document.getElementById('rules');
-      if (rules.style.display === 'block') {
-        rules.style.display = 'none';
-      } else {
-        rules.style.display = 'block';
-        gtag('event', 'view_rules');
-      }
-    }
+    // Обработка выбора поля ввода
+    const inputs = document.querySelectorAll('#result input');
+    inputs.forEach(input => {
+      input.addEventListener('click', () => {
+        inputs.forEach(inp => inp.classList.remove('active'));
+        input.classList.add('active');
+        activeInput = input;
+      });
+    });
 
+    // Показываем клавиатуру, когда отображается #result
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
       const gameArea = document.getElementById('game-area');
@@ -217,8 +265,8 @@
       gameStarted = true;
 
       for (let i = 0; i < matchCount; i++) {
-        const x = Math.random() * (300 - 70); // Диапазон 0–230px
-        const y = Math.random() * (300 - 70); // Диапазон 0–230px
+        const x = Math.random() * (300 - 70);
+        const y = Math.random() * (300 - 70);
         const angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
@@ -250,7 +298,36 @@
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('result').style.display = 'block';
+        document.getElementById('custom-keyboard').style.display = 'grid'; // Показываем клавиатуру
+        // Устанавливаем первое поле активным по умолчанию
+        activeInput = document.getElementById('up');
+        activeInput.classList.add('active');
       }, 3000);
+    }
+
+    // Функция добавления цифры
+    function addNumber(number) {
+      if (!activeInput) return;
+      let currentValue = activeInput.value || '';
+      if (currentValue.length < 2) { // Ограничим ввод до 2 цифр
+        activeInput.value = currentValue + number;
+      }
+    }
+
+    // Функция удаления последней цифры
+    function deleteNumber() {
+      if (!activeInput) return;
+      activeInput.value = activeInput.value.slice(0, -1);
+    }
+
+    function toggleRules() {
+      const rules = document.getElementById('rules');
+      if (rules.style.display === 'block') {
+        rules.style.display = 'none';
+      } else {
+        rules.style.display = 'block';
+        gtag('event', 'view_rules');
+      }
     }
 
     function checkAnswers() {
@@ -294,6 +371,7 @@
       gtag('event', 'check_answers');
 
       document.getElementById('new-game-btn').style.display = 'block';
+      document.getElementById('custom-keyboard').style.display = 'none'; // Скрываем клавиатуру после проверки
     }
 
     function resetGame(event) {
@@ -306,6 +384,7 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
+      document.getElementById('custom-keyboard').style.display = 'none'; // Скрываем клавиатуру
       gameStarted = false;
       startGame();
     }
