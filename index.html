@@ -70,9 +70,9 @@
       background: #808080;
     }
     #check-btn {
-      padding: 15px 40px; /* Увеличиваем размер кнопки "Проверить" */
-      font-size: 16px; /* Увеличиваем шрифт */
-      margin-top: 20px; /* Увеличиваем отступ от клавиатуры */
+      padding: 15px 40px;
+      font-size: 16px;
+      margin-top: 20px;
     }
     input[type="number"] {
       background: #606060;
@@ -94,11 +94,9 @@
       left: 10px;
     }
     #rules-btn {
-      position: relative; /* Меняем позицию */
-      margin-top: 10px; /* Отступ от кнопки "Проверить" */
-      display: block; /* Делаем блочным, чтобы центрировать */
-      margin-left: auto;
-      margin-right: auto;
+      position: absolute;
+      bottom: -140px; /* Опускаем ниже на высоту двух кнопок "Проверить" */
+      left: 10px;
     }
     #rules {
       display: none;
@@ -170,6 +168,7 @@
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
+  <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <p><strong>Правила игры:</strong></p>
@@ -233,7 +232,6 @@
     <button id="check-btn" onclick="checkAnswers()">Проверить</button>
     <p id="feedback"></p>
   </div>
-  <button id="rules-btn" onclick="toggleRules()">Правила</button>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
