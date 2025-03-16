@@ -42,10 +42,9 @@
       background: #DAA520;
       border: 1px solid #8B4513;
       transform-origin: center;
-      /* Тень изначально отключена */
     }
     .match.with-shadow {
-      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень включается через класс */
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
     .match-head {
       position: absolute;
@@ -146,6 +145,9 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 5px;
     }
+    #custom-keyboard .spacer {
+      visibility: hidden;
+    }
     #custom-keyboard button {
       padding: 15px;
       font-size: 16px;
@@ -236,6 +238,7 @@
       <button onclick="addNumber('7')">7</button>
       <button onclick="addNumber('8')">8</button>
       <button onclick="addNumber('9')">9</button>
+      <span class="spacer"></span>
       <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
@@ -249,7 +252,7 @@
     let matchPositions = [];
     let gameStarted = false;
     let activeInput = null;
-    let shadowEnabled = false; // Тень изначально отключена
+    let shadowEnabled = false;
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -260,7 +263,6 @@
       matchCountSelect.appendChild(option);
     }
 
-    // Обработка выбора поля ввода
     const inputs = document.querySelectorAll('#result input');
     inputs.forEach(input => {
       input.addEventListener('click', () => {
@@ -270,10 +272,8 @@
       });
     });
 
-    // Инициализация кнопки тени
     document.getElementById('shadow-btn').textContent = 'Тень';
 
-    // Показываем клавиатуру, когда отображается #result
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
       const gameArea = document.getElementById('game-area');
@@ -283,12 +283,10 @@
       const matchCount = parseInt(matchCountSelect.value);
       gameStarted = true;
 
-      // Создаём виртуальную сетку для равномерного распределения
       const gridSize = Math.ceil(Math.sqrt(matchCount));
       const cellSize = 300 / gridSize;
       const positions = [];
 
-      // Генерируем позиции для каждой ячейки с учётом границ
       for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
           let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
@@ -299,13 +297,11 @@
         }
       }
 
-      // Перемешиваем позиции
       for (let i = positions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [positions[i], positions[j]] = [positions[j], positions[i]];
       }
 
-      // Размещаем спички с проверкой на пересечения
       const placedPositions = [];
       for (let i = 0; i < matchCount; i++) {
         let pos = positions[i];
@@ -314,7 +310,6 @@
         let angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
-        // Проверка на минимальное расстояние (20px) от других спичек
         let tooClose = false;
         for (let j = 0; j < placedPositions.length; j++) {
           const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -324,7 +319,6 @@
           }
         }
 
-        // Если слишком близко, пробуем другую позицию
         if (tooClose) {
           for (let attempt = 0; attempt < 10; attempt++) {
             x = positions[(i + attempt) % positions.length].x;
@@ -341,7 +335,6 @@
           }
         }
 
-        // Корректировка позиции с учётом обоих концов спички
         let validPosition = false;
         for (let attempt = 0; attempt < 10; attempt++) {
           const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
@@ -380,7 +373,7 @@
 
         const match = document.createElement('div');
         match.className = 'match';
-        if (shadowEnabled) match.classList.add('with-shadow'); // Добавляем тень, если включена
+        if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = x + 'px';
         match.style.top = y + 'px';
         match.style.transform = `rotate(${angle}deg)`;
@@ -414,7 +407,6 @@
       }, 3000);
     }
 
-    // Переключение тени
     function toggleShadow() {
       shadowEnabled = !shadowEnabled;
       const shadowBtn = document.getElementById('shadow-btn');
@@ -429,7 +421,6 @@
       gtag('event', 'toggle_shadow', { 'enabled': shadowEnabled });
     }
 
-    // Функция добавления цифры
     function addNumber(number) {
       if (!activeInput) return;
       let currentValue = activeInput.value || '';
@@ -438,7 +429,6 @@
       }
     }
 
-    // Функция удаления последней цифры
     function deleteNumber() {
       if (!activeInput) return;
       activeInput.value = activeInput.value.slice(0, -1);
@@ -480,7 +470,7 @@
       matchPositions.forEach(pos => {
         const match = document.createElement('div');
         match.className = 'match';
-        if (shadowEnabled) match.classList.add('with-shadow'); // Учитываем состояние тени
+        if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = pos.x + 'px';
         match.style.top = pos.y + 'px';
         match.style.transform = `rotate(${pos.angle}deg)`;
