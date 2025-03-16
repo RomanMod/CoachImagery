@@ -69,6 +69,11 @@
     button:hover {
       background: #808080;
     }
+    #check-btn {
+      padding: 15px 40px; /* Увеличиваем размер кнопки "Проверить" */
+      font-size: 16px; /* Увеличиваем шрифт */
+      margin-top: 20px; /* Увеличиваем отступ от клавиатуры */
+    }
     input[type="number"] {
       background: #606060;
       color: #FFFFFF;
@@ -89,9 +94,11 @@
       left: 10px;
     }
     #rules-btn {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
+      position: relative; /* Меняем позицию */
+      margin-top: 10px; /* Отступ от кнопки "Проверить" */
+      display: block; /* Делаем блочным, чтобы центрировать */
+      margin-left: auto;
+      margin-right: auto;
     }
     #rules {
       display: none;
@@ -150,7 +157,7 @@
       background: #C05050;
     }
     input.active {
-      border: 2px solid #DAA520; /* Подсветка активного поля */
+      border: 2px solid #DAA520;
     }
   </style>
 </head>
@@ -163,7 +170,6 @@
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
-  <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <p><strong>Правила игры:</strong></p>
@@ -224,9 +230,10 @@
       <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
-    <button onclick="checkAnswers()">Проверить</button>
+    <button id="check-btn" onclick="checkAnswers()">Проверить</button>
     <p id="feedback"></p>
   </div>
+  <button id="rules-btn" onclick="toggleRules()">Правила</button>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
@@ -298,8 +305,7 @@
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('custom-keyboard').style.display = 'grid'; // Показываем клавиатуру
-        // Устанавливаем первое поле активным по умолчанию
+        document.getElementById('custom-keyboard').style.display = 'grid';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
       }, 3000);
@@ -309,7 +315,7 @@
     function addNumber(number) {
       if (!activeInput) return;
       let currentValue = activeInput.value || '';
-      if (currentValue.length < 2) { // Ограничим ввод до 2 цифр
+      if (currentValue.length < 2) {
         activeInput.value = currentValue + number;
       }
     }
@@ -371,7 +377,7 @@
       gtag('event', 'check_answers');
 
       document.getElementById('new-game-btn').style.display = 'block';
-      document.getElementById('custom-keyboard').style.display = 'none'; // Скрываем клавиатуру после проверки
+      document.getElementById('custom-keyboard').style.display = 'none';
     }
 
     function resetGame(event) {
@@ -384,7 +390,7 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
-      document.getElementById('custom-keyboard').style.display = 'none'; // Скрываем клавиатуру
+      document.getElementById('custom-keyboard').style.display = 'none';
       gameStarted = false;
       startGame();
     }
