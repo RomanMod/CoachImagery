@@ -227,7 +227,6 @@
       <button onclick="addNumber('8')">8</button>
       <button onclick="addNumber('9')">9</button>
       <button onclick="addNumber('0')">0</button>
-      <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
     <button id="check-btn" onclick="checkAnswers()">Проверить</button>
@@ -271,17 +270,17 @@
       gameStarted = true;
 
       // Создаём виртуальную сетку для равномерного распределения
-      const gridSize = Math.ceil(Math.sqrt(matchCount));
+      const gridSize = Math.ceil(Math.sqrt(matchCount) * 1.2); // Увеличиваем плотность сетки
       const cellSize = 300 / gridSize;
       const positions = [];
 
       // Генерируем позиции для каждой ячейки с учётом границ
       for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
-          let x = col * cellSize + (cellSize / 2);
-          let y = row * cellSize + (cellSize / 2);
-          x = Math.max(0 + 10, Math.min(300 - 10, x));
-          y = Math.max(0 + 10, Math.min(300 - 10, y));
+          let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
+          let y = row * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
+          x = Math.max(0 + 10, Math.min(300 - 65, x));
+          y = Math.max(0 + 10, Math.min(300 - 65, y));
           positions.push({ x, y });
         }
       }
@@ -292,8 +291,9 @@
         [positions[i], positions[j]] = [positions[j], positions[i]];
       }
 
-      // Размещаем спички с проверкой на пересечения
+      // Размещаем спички с проверкой на пересечения и баланс нижней части
       const placedPositions = [];
+      let lowerHalfCount = 0;
       for (let i = 0; i < matchCount; i++) {
         let pos = positions[i];
         let x = pos.x;
@@ -301,40 +301,7 @@
         let angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
-        // Расчёт смещений для обоих концов (относительно центра)
-        const halfLength = 27.5; // Половина длины спички (55px / 2)
-        const headOffsetX = Math.cos(angle * Math.PI / 180) * halfLength;
-        const headOffsetY = Math.sin(angle * Math.PI / 180) * halfLength;
-        const leftOffsetX = -headOffsetX;
-        const leftOffsetY = -headOffsetY;
-
-        // Проверка границ для левого и правого концов
-        let validPosition = false;
-        for (let attempt = 0; attempt < 10; attempt++) {
-          const headX = x + headOffsetX;
-          const headY = y + headOffsetY;
-          const leftX = x + leftOffsetX;
-          const leftY = y + leftOffsetY;
-
-          if (
-            (headX >= 10 && headX <= 290) &&
-            (headY >= 10 && headY <= 290) &&
-            (leftX >= 10 && leftX <= 290) &&
-            (leftY >= 10 && leftY <= 290)
-          ) {
-            validPosition = true;
-            break;
-          }
-          x = positions[(i + attempt) % positions.length].x;
-          y = positions[(i + attempt) % positions.length].y;
-        }
-
-        if (!validPosition) {
-          x = 150; // Центр поля, если не удалось найти позицию
-          y = 150;
-        }
-
-        // Проверка на минимальное расстояние (20px) от других спичек
+        // Проверка на минимальное расстояние (20px)
         let tooClose = false;
         for (let j = 0; j < placedPositions.length; j++) {
           const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -344,11 +311,12 @@
           }
         }
 
-        // Если слишком близко, пробуем другую позицию
-        if (tooClose) {
+        // Если слишком близко или нижняя часть недостаточно заполнена, корректируем
+        if (tooClose || (y < 150 && lowerHalfCount < matchCount / 2)) {
           for (let attempt = 0; attempt < 10; attempt++) {
             x = positions[(i + attempt) % positions.length].x;
             y = positions[(i + attempt) % positions.length].y;
+            if (y > 150) y = Math.max(150, y); // Смещаем вниз, если в верхней половине
             tooClose = false;
             for (let j = 0; j < placedPositions.length; j++) {
               const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -361,10 +329,16 @@
           }
         }
 
+        // Корректировка позиции в зависимости от угла
+        const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
+        const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
+        if (x + headOffsetX < 0 + 10 || x + headOffsetX > 300 - 10) x = 300 / 2;
+        if (y + headOffsetY < 0 + 10 || y + headOffsetY > 300 - 10) y = 300 / 2;
+
         const match = document.createElement('div');
         match.className = 'match';
-        match.style.left = (x - 27.5) + 'px'; // Смещаем, чтобы x указывал на центр
-        match.style.top = (y - 2.5) + 'px';  // Смещаем, чтобы y указывал на центр
+        match.style.left = x + 'px';
+        match.style.top = y + 'px';
         match.style.transform = `rotate(${angle}deg)`;
         match.style.zIndex = zIndex;
 
@@ -383,6 +357,50 @@
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
         placedPositions.push({ x, y });
+        if (y > 150) lowerHalfCount++; // Считаем спички в нижней половине
+      }
+
+      // Если нижняя половина недостаточно заполнена, добавляем спички
+      while (lowerHalfCount < matchCount / 2 && placedPositions.length < positions.length) {
+        let pos = positions[placedPositions.length];
+        let x = pos.x;
+        let y = Math.max(150, pos.y); // Принудительно в нижнюю половину
+        let angle = Math.random() * 360;
+        const zIndex = Math.floor(Math.random() * matchCount);
+
+        let tooClose = false;
+        for (let j = 0; j < placedPositions.length; j++) {
+          const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
+          if (dist < 20) {
+            tooClose = true;
+            break;
+          }
+        }
+        if (!tooClose) {
+          const match = document.createElement('div');
+          match.className = 'match';
+          match.style.left = x + 'px';
+          match.style.top = y + 'px';
+          match.style.transform = `rotate(${angle}deg)`;
+          match.style.zIndex = zIndex;
+
+          const head = document.createElement('div');
+          head.className = 'match-head';
+
+          match.appendChild(head);
+          gameArea.appendChild(match);
+
+          let direction = '';
+          if (angle >= 45 && angle < 135) direction = 'down';
+          else if (angle >= 135 && angle < 225) direction = 'left';
+          else if (angle >= 225 && angle < 315) direction = 'up';
+          else direction = 'right';
+
+          matches.push(direction);
+          matchPositions.push({ x, y, angle, zIndex });
+          placedPositions.push({ x, y });
+          lowerHalfCount++;
+        }
       }
 
       gtag('event', 'game_start', { 'match_count': matchCount });
@@ -438,7 +456,7 @@
         Вверх: <span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span><br>
         Вниз: <span class="${down === actual.down ? 'correct' : 'incorrect'}">${actual.down}</span><br>
         Вправо: <span class="${right === actual.right ? 'correct' : 'incorrect'}">${actual.right}</span><br>
-        Влево: <span class="${left === actual.left ? 'incorrect'}">${actual.left}</span>
+        Влево: <span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span>
       `;
       document.getElementById('feedback').innerHTML = feedback;
 
@@ -447,8 +465,8 @@
       matchPositions.forEach(pos => {
         const match = document.createElement('div');
         match.className = 'match';
-        match.style.left = (pos.x - 27.5) + 'px';
-        match.style.top = (pos.y - 2.5) + 'px';
+        match.style.left = pos.x + 'px';
+        match.style.top = pos.y + 'px';
         match.style.transform = `rotate(${pos.angle}deg)`;
         match.style.zIndex = pos.zIndex;
 
