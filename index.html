@@ -90,8 +90,8 @@
     }
     #new-game-btn {
       position: absolute;
-      top: 10px; /* Уменьшаем отступ сверху для прижима к верхнему краю */
-      left: 10px; /* Оставляем небольшой отступ слева */
+      top: 10px;
+      left: 10px;
     }
     #rules-btn {
       position: absolute;
@@ -226,7 +226,6 @@
       <button onclick="addNumber('8')">8</button>
       <button onclick="addNumber('9')">9</button>
       <button onclick="addNumber('0')">0</button>
-      <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
     <button id="check-btn" onclick="checkAnswers()">Проверить</button>
@@ -269,11 +268,42 @@
       const matchCount = parseInt(matchCountSelect.value);
       gameStarted = true;
 
+      // Создаём виртуальную сетку для равномерного распределения
+      const gridSize = Math.ceil(Math.sqrt(matchCount)); // Размер сетки (например, для 80 спичек это 9x9)
+      const cellSize = 300 / gridSize; // Размер ячейки
+      const positions = [];
+
+      // Генерируем позиции для каждой ячейки с учётом границ
+      for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+          let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10); // Случайное смещение
+          let y = row * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
+          // Корректировка, чтобы спички не выходили за границы
+          x = Math.max(0 + 5, Math.min(300 - 60, x)); // Оставляем отступ 5px от краёв
+          y = Math.max(0 + 5, Math.min(300 - 60, y));
+          positions.push({ x, y });
+        }
+      }
+
+      // Перемешиваем позиции
+      for (let i = positions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [positions[i], positions[j]] = [positions[j], positions[i]];
+      }
+
+      // Размещаем спички с проверкой границ
       for (let i = 0; i < matchCount; i++) {
-        const x = Math.random() * (300 - 70);
-        const y = Math.random() * (300 - 70);
-        const angle = Math.random() * 360;
+        const pos = positions[i];
+        let x = pos.x;
+        let y = pos.y;
+        let angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
+
+        // Корректировка позиции в зависимости от угла, чтобы головка не выходила
+        const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
+        const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
+        if (x + headOffsetX < 0 || x + headOffsetX > 300 - 10) x = 300 / 2; // Центрируем, если головка выходит
+        if (y + headOffsetY < 0 || y + headOffsetY > 300 - 10) y = 300 / 2;
 
         const match = document.createElement('div');
         match.className = 'match';
