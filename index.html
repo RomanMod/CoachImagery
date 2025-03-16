@@ -227,7 +227,6 @@
       <button onclick="addNumber('8')">8</button>
       <button onclick="addNumber('9')">9</button>
       <button onclick="addNumber('0')">0</button>
-      <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
     <button id="check-btn" onclick="checkAnswers()">Проверить</button>
@@ -278,10 +277,10 @@
       // Генерируем позиции для каждой ячейки с учётом границ
       for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col < gridSize; col++) {
-          let x = col * cellSize + (cellSize / 2);
-          let y = row * cellSize + (cellSize / 2);
-          x = Math.max(0 + 10, Math.min(300 - 10, x));
-          y = Math.max(0 + 10, Math.min(300 - 10, y));
+          let x = col * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
+          let y = row * cellSize + (cellSize / 2) - 25 + (Math.random() * 20 - 10);
+          x = Math.max(0 + 10, Math.min(300 - 65, x));
+          y = Math.max(0 + 10, Math.min(300 - 65, y));
           positions.push({ x, y });
         }
       }
@@ -301,26 +300,22 @@
         let angle = Math.random() * 360;
         const zIndex = Math.floor(Math.random() * matchCount);
 
-        // Расчёт смещений для обоих концов (относительно центра)
-        const halfLength = 27.5; // Половина длины спички (55px / 2)
-        const headOffsetX = Math.cos(angle * Math.PI / 180) * halfLength;
-        const headOffsetY = Math.sin(angle * Math.PI / 180) * halfLength;
-        const leftOffsetX = -headOffsetX;
+        // Расчёт смещений для обоих концов
+        const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
+        const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
+        const leftOffsetX = -headOffsetX; // Смещение для левого конца
         const leftOffsetY = -headOffsetY;
 
         // Проверка границ для левого и правого концов
         let validPosition = false;
         for (let attempt = 0; attempt < 10; attempt++) {
-          const headX = x + headOffsetX;
-          const headY = y + headOffsetY;
-          const leftX = x + leftOffsetX;
-          const leftY = y + leftOffsetY;
-
           if (
-            (headX >= 10 && headX <= 290) &&
-            (headY >= 10 && headY <= 290) &&
-            (leftX >= 10 && leftX <= 290) &&
-            (leftY >= 10 && leftY <= 290)
+            (x >= 10 && x <= 290) &&
+            (y >= 10 && y <= 290) &&
+            (x + headOffsetX >= 10 && x + headOffsetX <= 290) &&
+            (y + headOffsetY >= 10 && y + headOffsetY <= 290) &&
+            (x + leftOffsetX >= 10 && x + leftOffsetX <= 290) &&
+            (y + leftOffsetY >= 10 && y + leftOffsetY <= 290)
           ) {
             validPosition = true;
             break;
@@ -363,8 +358,8 @@
 
         const match = document.createElement('div');
         match.className = 'match';
-        match.style.left = (x - 27.5) + 'px'; // Смещаем, чтобы x указывал на центр
-        match.style.top = (y - 2.5) + 'px';  // Смещаем, чтобы y указывал на центр
+        match.style.left = x + 'px';
+        match.style.top = y + 'px';
         match.style.transform = `rotate(${angle}deg)`;
         match.style.zIndex = zIndex;
 
@@ -447,8 +442,8 @@
       matchPositions.forEach(pos => {
         const match = document.createElement('div');
         match.className = 'match';
-        match.style.left = (pos.x - 27.5) + 'px';
-        match.style.top = (pos.y - 2.5) + 'px';
+        match.style.left = pos.x + 'px';
+        match.style.top = pos.y + 'px';
         match.style.transform = `rotate(${pos.angle}deg)`;
         match.style.zIndex = pos.zIndex;
 
