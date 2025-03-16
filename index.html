@@ -42,7 +42,10 @@
       background: #DAA520;
       border: 1px solid #8B4513;
       transform-origin: center;
-      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень по умолчанию включена */
+    }
+    .match.no-shadow {
+      box-shadow: none; /* Отключаем тень */
     }
     .match-head {
       position: absolute;
@@ -93,6 +96,13 @@
       position: absolute;
       top: 10px;
       left: 10px;
+    }
+    #shadow-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
     }
     #rules-btn {
       position: absolute;
@@ -165,7 +175,9 @@
     <label for="match-count">Количество спичек: </label>
     <select id="match-count"></select>
   </div>
-  <div id="game-area" onclick="resetGame(event)"></div>
+  <div id="game-area" onclick="resetGame(event)">
+    <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
+  </div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
@@ -239,6 +251,7 @@
     let matchPositions = [];
     let gameStarted = false;
     let activeInput = null;
+    let shadowEnabled = true; // Переменная для состояния тени
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -332,11 +345,11 @@
         for (let attempt = 0; attempt < 10; attempt++) {
           const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
           const headOffsetY = Math.sin(angle * Math.PI / 180) * 55;
-          const centerOffsetX = headOffsetX / 2; // Смещение центра относительно левого конца
+          const centerOffsetX = headOffsetX / 2;
           const centerOffsetY = headOffsetY / 2;
-          const leftX = x; // Левый конец — это (x, y)
+          const leftX = x;
           const leftY = y;
-          const headX = x + headOffsetX; // Правый конец (головка)
+          const headX = x + headOffsetX;
           const headY = y + headOffsetY;
 
           if (
@@ -349,7 +362,6 @@
             break;
           }
 
-          // Если позиция не подходит, корректируем x и y
           if (leftX < 10) x += (10 - leftX);
           if (leftX > 290) x -= (leftX - 290);
           if (leftY < 10) y += (10 - leftY);
@@ -361,12 +373,13 @@
         }
 
         if (!validPosition) {
-          x = 150; // Центр поля, если не удалось найти подходящую позицию
+          x = 150;
           y = 150;
         }
 
         const match = document.createElement('div');
         match.className = 'match';
+        if (!shadowEnabled) match.classList.add('no-shadow'); // Добавляем класс для отключения тени
         match.style.left = x + 'px';
         match.style.top = y + 'px';
         match.style.transform = `rotate(${angle}deg)`;
@@ -398,6 +411,21 @@
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
       }, 3000);
+    }
+
+    // Переключение тени
+    function toggleShadow() {
+      shadowEnabled = !shadowEnabled;
+      const shadowBtn = document.getElementById('shadow-btn');
+      const matches = document.querySelectorAll('.match');
+      if (shadowEnabled) {
+        shadowBtn.textContent = 'Тень';
+        matches.forEach(match => match.classList.remove('no-shadow'));
+      } else {
+        shadowBtn.textContent = 'Тень (выкл)';
+        matches.forEach(match => match.classList.add('no-shadow'));
+      }
+      gtag('event', 'toggle_shadow', { 'enabled': shadowEnabled });
     }
 
     // Функция добавления цифры
@@ -451,6 +479,7 @@
       matchPositions.forEach(pos => {
         const match = document.createElement('div');
         match.className = 'match';
+        if (!shadowEnabled) match.classList.add('no-shadow'); // Учитываем состояние тени
         match.style.left = pos.x + 'px';
         match.style.top = pos.y + 'px';
         match.style.transform = `rotate(${pos.angle}deg)`;
