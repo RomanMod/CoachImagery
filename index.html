@@ -96,6 +96,12 @@
       top: 10px;
       left: 10px;
     }
+    #overlap-btn {
+      position: absolute;
+      bottom: -250px; /* Над кнопкой тени */
+      right: 10px;
+      padding: 10px 20px;
+    }
     #shadow-btn {
       position: absolute;
       bottom: -300px;
@@ -180,6 +186,7 @@
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
+  <button id="overlap-btn" onclick="toggleOverlap()">Пересечение (вкл)</button>
   <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
@@ -253,6 +260,7 @@
     let gameStarted = false;
     let activeInput = null;
     let shadowEnabled = false;
+    let overlapEnabled = true; // Пересечение изначально включено
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -273,6 +281,7 @@
     });
 
     document.getElementById('shadow-btn').textContent = 'Тень';
+    document.getElementById('overlap-btn').textContent = 'Пересечение (вкл)';
 
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
@@ -297,23 +306,27 @@
           const headX = x + headOffsetX;
           const headY = y + headOffsetY;
 
-          // Проверяем границы
+          // Проверяем только границы, пересечения включаем/выключаем
           if (
             x >= 10 && x <= 290 &&
             y >= 10 && y <= 290 &&
             headX >= 10 && headX <= 290 &&
             headY >= 10 && headY <= 290
           ) {
-            // Проверяем пересечения
-            let tooClose = false;
-            for (let j = 0; j < placedPositions.length; j++) {
-              const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
-              if (dist < 20) {
-                tooClose = true;
+            if (!overlapEnabled) {
+              let tooClose = false;
+              for (let j = 0; j < placedPositions.length; j++) {
+                const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
+                if (dist < 20) {
+                  tooClose = true;
+                  break;
+                }
+              }
+              if (!tooClose) {
+                validPosition = true;
                 break;
               }
-            }
-            if (!tooClose) {
+            } else {
               validPosition = true;
               break;
             }
@@ -373,6 +386,19 @@
         matches.forEach(match => match.classList.remove('with-shadow'));
       }
       gtag('event', 'toggle_shadow', { 'enabled': shadowEnabled });
+    }
+
+    function toggleOverlap() {
+      overlapEnabled = !overlapEnabled;
+      const overlapBtn = document.getElementById('overlap-btn');
+      if (overlapEnabled) {
+        overlapBtn.textContent = 'Пересечение (вкл)';
+      } else {
+        overlapBtn.textContent = 'Пересечение (выкл)';
+      }
+      gtag('event', 'toggle_overlap', { 'enabled': overlapEnabled });
+      // Перезапуск игры для применения изменений
+      resetGame(new Event('click'));
     }
 
     function addNumber(number) {
