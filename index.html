@@ -96,9 +96,9 @@
       top: 10px;
       left: 10px;
     }
-    #overlap-btn {
+    #toggle-collision-btn {
       position: absolute;
-      bottom: -250px; /* Над кнопкой тени */
+      bottom: -250px; /* Над shadow-btn */
       right: 10px;
       padding: 10px 20px;
     }
@@ -186,7 +186,7 @@
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
-  <button id="overlap-btn" onclick="toggleOverlap()">Пересечение (вкл)</button>
+  <button id="toggle-collision-btn" onclick="toggleCollisionCheck()">Пересечения (выкл)</button>
   <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
@@ -260,7 +260,7 @@
     let gameStarted = false;
     let activeInput = null;
     let shadowEnabled = false;
-    let overlapEnabled = true; // Пересечение изначально включено
+    let collisionCheckEnabled = false; // Изначально выключено
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -281,7 +281,7 @@
     });
 
     document.getElementById('shadow-btn').textContent = 'Тень';
-    document.getElementById('overlap-btn').textContent = 'Пересечение (вкл)';
+    document.getElementById('toggle-collision-btn').textContent = 'Пересечения (выкл)';
 
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
@@ -306,14 +306,15 @@
           const headX = x + headOffsetX;
           const headY = y + headOffsetY;
 
-          // Проверяем только границы, пересечения включаем/выключаем
+          // Проверяем границы
           if (
             x >= 10 && x <= 290 &&
             y >= 10 && y <= 290 &&
             headX >= 10 && headX <= 290 &&
             headY >= 10 && headY <= 290
           ) {
-            if (!overlapEnabled) {
+            if (collisionCheckEnabled) {
+              // Проверка пересечений, если включена
               let tooClose = false;
               for (let j = 0; j < placedPositions.length; j++) {
                 const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
@@ -322,14 +323,12 @@
                   break;
                 }
               }
-              if (!tooClose) {
-                validPosition = true;
-                break;
-              }
+              if (!tooClose) validPosition = true;
             } else {
+              // Без проверки пересечений
               validPosition = true;
-              break;
             }
+            if (validPosition) break;
           }
         }
 
@@ -374,6 +373,19 @@
       }, 3000);
     }
 
+    function toggleCollisionCheck() {
+      collisionCheckEnabled = !collisionCheckEnabled;
+      const toggleBtn = document.getElementById('toggle-collision-btn');
+      if (collisionCheckEnabled) {
+        toggleBtn.textContent = 'Пересечения (вкл)';
+      } else {
+        toggleBtn.textContent = 'Пересечения (выкл)';
+      }
+      gtag('event', 'toggle_collision_check', { 'enabled': collisionCheckEnabled });
+      // Перезапуск игры для применения изменений
+      if (gameStarted) resetGame(new Event('click'));
+    }
+
     function toggleShadow() {
       shadowEnabled = !shadowEnabled;
       const shadowBtn = document.getElementById('shadow-btn');
@@ -386,19 +398,6 @@
         matches.forEach(match => match.classList.remove('with-shadow'));
       }
       gtag('event', 'toggle_shadow', { 'enabled': shadowEnabled });
-    }
-
-    function toggleOverlap() {
-      overlapEnabled = !overlapEnabled;
-      const overlapBtn = document.getElementById('overlap-btn');
-      if (overlapEnabled) {
-        overlapBtn.textContent = 'Пересечение (вкл)';
-      } else {
-        overlapBtn.textContent = 'Пересечение (выкл)';
-      }
-      gtag('event', 'toggle_overlap', { 'enabled': overlapEnabled });
-      // Перезапуск игры для применения изменений
-      resetGame(new Event('click'));
     }
 
     function addNumber(number) {
@@ -458,6 +457,7 @@
 
         const head = document.createElement('div');
         head.className = 'match-head';
+
         match.appendChild(head);
         gameArea.appendChild(match);
       });
