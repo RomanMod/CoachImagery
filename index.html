@@ -96,12 +96,6 @@
       top: 10px;
       left: 10px;
     }
-    #toggle-collision-btn {
-      position: absolute;
-      bottom: -250px; /* Над shadow-btn */
-      right: 10px;
-      padding: 10px 20px;
-    }
     #shadow-btn {
       position: absolute;
       bottom: -300px;
@@ -186,7 +180,6 @@
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
-  <button id="toggle-collision-btn" onclick="toggleCollisionCheck()">Пересечения (выкл)</button>
   <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
@@ -260,7 +253,6 @@
     let gameStarted = false;
     let activeInput = null;
     let shadowEnabled = false;
-    let collisionCheckEnabled = false; // Изначально выключено
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -281,7 +273,6 @@
     });
 
     document.getElementById('shadow-btn').textContent = 'Тень';
-    document.getElementById('toggle-collision-btn').textContent = 'Пересечения (выкл)';
 
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
@@ -306,29 +297,15 @@
           const headX = x + headOffsetX;
           const headY = y + headOffsetY;
 
-          // Проверяем границы
+          // Проверяем только границы
           if (
             x >= 10 && x <= 290 &&
             y >= 10 && y <= 290 &&
             headX >= 10 && headX <= 290 &&
             headY >= 10 && headY <= 290
           ) {
-            if (collisionCheckEnabled) {
-              // Проверка пересечений, если включена
-              let tooClose = false;
-              for (let j = 0; j < placedPositions.length; j++) {
-                const dist = Math.sqrt((x - placedPositions[j].x) ** 2 + (y - placedPositions[j].y) ** 2);
-                if (dist < 20) {
-                  tooClose = true;
-                  break;
-                }
-              }
-              if (!tooClose) validPosition = true;
-            } else {
-              // Без проверки пересечений
-              validPosition = true;
-            }
-            if (validPosition) break;
+            validPosition = true;
+            break;
           }
         }
 
@@ -371,19 +348,6 @@
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
       }, 3000);
-    }
-
-    function toggleCollisionCheck() {
-      collisionCheckEnabled = !collisionCheckEnabled;
-      const toggleBtn = document.getElementById('toggle-collision-btn');
-      if (collisionCheckEnabled) {
-        toggleBtn.textContent = 'Пересечения (вкл)';
-      } else {
-        toggleBtn.textContent = 'Пересечения (выкл)';
-      }
-      gtag('event', 'toggle_collision_check', { 'enabled': collisionCheckEnabled });
-      // Перезапуск игры для применения изменений
-      if (gameStarted) resetGame(new Event('click'));
     }
 
     function toggleShadow() {
@@ -457,7 +421,6 @@
 
         const head = document.createElement('div');
         head.className = 'match-head';
-
         match.appendChild(head);
         gameArea.appendChild(match);
       });
