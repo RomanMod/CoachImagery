@@ -75,7 +75,6 @@
     #check-btn {
       padding: 15px 40px;
       font-size: 16px;
-      margin-top: 20px;
     }
     input[type="number"] {
       background: #606060;
@@ -92,9 +91,8 @@
       border: 1px solid #808080;
     }
     #new-game-btn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
+      display: none;
+      margin: 0 10px;
     }
     #shadow-btn {
       position: absolute;
@@ -174,12 +172,18 @@
     input.active {
       border: 2px solid #DAA520;
     }
+    #button-container {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
+  <div id="button-container">
+    <button id="check-btn" onclick="checkAnswers()" style="display: none;">Проверить</button>
+    <button id="new-game-btn" onclick="resetGame(event)">Новая игра</button>
+  </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
-  <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
   <div id="match-count-container">
@@ -247,7 +251,6 @@
       <button onclick="addNumber('0')">0</button>
       <button onclick="deleteNumber()" class="delete-btn">⌫</button>
     </div>
-    <button id="check-btn" onclick="checkAnswers()">Проверить</button>
     <p id="feedback"></p>
   </div>
 
@@ -350,6 +353,7 @@
         gameArea.innerHTML = '';
         document.getElementById('result').style.display = 'block';
         document.getElementById('custom-keyboard').style.display = 'grid';
+        document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
       }, 3000);
@@ -432,8 +436,9 @@
 
       gtag('event', 'check_answers');
 
-      document.getElementById('new-game-btn').style.display = 'block';
+      document.getElementById('new-game-btn').style.display = 'inline-block';
       document.getElementById('custom-keyboard').style.display = 'none';
+      document.getElementById('check-btn').style.display = 'none';
     }
 
     function resetGame(event) {
@@ -441,6 +446,7 @@
       document.getElementById('result').style.display = 'none';
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
+      document.getElementById('check-btn').style.display = 'none';
       document.getElementById('feedback').innerHTML = '';
       document.getElementById('up').value = '';
       document.getElementById('down').value = '';
