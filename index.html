@@ -193,7 +193,7 @@
     <p>Сколько вниз? <input id="down" type="number" readonly></p>
     <p>Сколько вправо? <input id="right" type="number" readonly></p>
     <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <p id="feedback"></p>
+    <p id="feedback">Ожидание проверки...</p> <!-- Начальное значение -->
   </div>
   <div id="custom-keyboard">
     <button onclick="addNumber('1')">1</button>
@@ -358,6 +358,7 @@
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
+        document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
       }, 3000);
     }
 
@@ -447,11 +448,11 @@
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
       document.getElementById('check-btn').style.display = 'none';
-      document.getElementById('feedback').innerHTML = '';
       document.getElementById('up').value = '';
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
+      document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
       gameStarted = false;
       startGame();
     }
