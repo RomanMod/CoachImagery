@@ -19,7 +19,7 @@
       margin: 20px;
       background: #1C2526;
       color: #D3D3D3;
-      min-height: 100vh; /* Убрали height: 100vh, чтобы контент не обрезался */
+      min-height: 100vh; /* Чтобы контент мог прокручиваться */
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -106,8 +106,9 @@
       display: inline-block;
     }
     #controls-container {
-      margin-top: 10px; /* Отступ сверху от клавиатуры */
+      margin: 10px auto; /* Отступ сверху и центрирование */
       text-align: center;
+      width: 300px; /* Фиксированная ширина, как у клавиатуры */
     }
     #rules {
       display: none;
