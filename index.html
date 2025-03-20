@@ -59,7 +59,7 @@
     #result {
       display: none;
       margin-top: 20px;
-      min-height: 349px; /* Фиксируем высоту для клавиатуры */
+      min-height: 130px; /* Уменьшено, так как клавиатура вынесена */
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -193,21 +193,21 @@
     <p>Сколько вниз? <input id="down" type="number" readonly></p>
     <p>Сколько вправо? <input id="right" type="number" readonly></p>
     <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <div id="custom-keyboard">
-      <button onclick="addNumber('1')">1</button>
-      <button onclick="addNumber('2')">2</button>
-      <button onclick="addNumber('3')">3</button>
-      <button onclick="addNumber('4')">4</button>
-      <button onclick="addNumber('5')">5</button>
-      <button onclick="addNumber('6')">6</button>
-      <button onclick="addNumber('7')">7</button>
-      <button onclick="addNumber('8')">8</button>
-      <button onclick="addNumber('9')">9</button>
-      <span class="spacer"></span>
-      <button onclick="addNumber('0')">0</button>
-      <button onclick="deleteNumber()" class="delete-btn">⌫</button>
-    </div>
     <p id="feedback"></p>
+  </div>
+  <div id="custom-keyboard">
+    <button onclick="addNumber('1')">1</button>
+    <button onclick="addNumber('2')">2</button>
+    <button onclick="addNumber('3')">3</button>
+    <button onclick="addNumber('4')">4</button>
+    <button onclick="addNumber('5')">5</button>
+    <button onclick="addNumber('6')">6</button>
+    <button onclick="addNumber('7')">7</button>
+    <button onclick="addNumber('8')">8</button>
+    <button onclick="addNumber('9')">9</button>
+    <span class="spacer"></span>
+    <button onclick="addNumber('0')">0</button>
+    <button onclick="deleteNumber()" class="delete-btn">⌫</button>
   </div>
   <div id="controls-container">
     <button id="rules-btn" onclick="toggleRules()">Правила</button>
