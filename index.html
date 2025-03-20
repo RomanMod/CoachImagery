@@ -23,7 +23,7 @@
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      position: relative; /* Для позиционирования #controls-container */
+      position: relative;
     }
     #game-area {
       width: 300px;
@@ -141,13 +141,12 @@
       background: #A0A0A0;
     }
     #custom-keyboard {
-      display: none;
       margin: 10px auto;
       width: 300px;
       background: #2C3536;
       padding: 10px;
       border-radius: 5px;
-      display: grid;
+      display: grid; /* Постоянно отображается */
       grid-template-columns: repeat(3, 1fr);
       gap: 5px;
     }
@@ -302,9 +301,8 @@
       for (let i = 0; i < matchCount; i++) {
         let x, y, angle, validPosition = false;
 
-        // Генерируем случайные координаты с учётом границ
         for (let attempt = 0; attempt < 50; attempt++) {
-          x = Math.random() * (300 - 65) + 10; // От 10 до 235 (учитываем длину 55px)
+          x = Math.random() * (300 - 65) + 10;
           y = Math.random() * (300 - 65) + 10;
           angle = Math.random() * 360;
           const headOffsetX = Math.cos(angle * Math.PI / 180) * 55;
@@ -312,7 +310,6 @@
           const headX = x + headOffsetX;
           const headY = y + headOffsetY;
 
-          // Проверяем только границы
           if (
             x >= 10 && x <= 290 &&
             y >= 10 && y <= 290 &&
@@ -325,7 +322,7 @@
         }
 
         if (!validPosition) {
-          x = 150; // Центр, если не удалось найти позицию
+          x = 150;
           y = 150;
         }
 
@@ -359,7 +356,6 @@
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('custom-keyboard').style.display = 'grid';
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
@@ -444,7 +440,6 @@
       gtag('event', 'check_answers');
 
       document.getElementById('new-game-btn').style.display = 'inline-block';
-      document.getElementById('custom-keyboard').style.display = 'none';
       document.getElementById('check-btn').style.display = 'none';
     }
 
@@ -459,7 +454,6 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
-      document.getElementById('custom-keyboard').style.display = 'none';
       gameStarted = false;
       startGame();
     }
