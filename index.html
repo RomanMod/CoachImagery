@@ -19,11 +19,10 @@
       margin: 20px;
       background: #1C2526;
       color: #D3D3D3;
-      height: 100vh;
+      min-height: 100vh; /* Убрали height: 100vh, чтобы контент не обрезался */
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      position: relative;
     }
     #game-area {
       width: 300px;
@@ -107,10 +106,7 @@
       display: inline-block;
     }
     #controls-container {
-      position: absolute;
-      bottom: 20px; /* Отступ от нижнего края */
-      left: 0;
-      right: 0;
+      margin-top: 10px; /* Отступ сверху от клавиатуры */
       text-align: center;
     }
     #rules {
@@ -193,7 +189,7 @@
     <p>Сколько вниз? <input id="down" type="number" readonly></p>
     <p>Сколько вправо? <input id="right" type="number" readonly></p>
     <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <p id="feedback">Ожидание проверки...</p> <!-- Начальное значение -->
+    <p id="feedback">Ожидание проверки...</p>
   </div>
   <div id="custom-keyboard">
     <button onclick="addNumber('1')">1</button>
