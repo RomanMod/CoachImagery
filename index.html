@@ -95,14 +95,20 @@
       margin: 0 10px;
     }
     #shadow-btn {
-      margin: 0 10px;
+      position: absolute;
+      bottom: -300px;
+      right: 10px;
+      padding: 10px 20px;
     }
     #rules-btn {
-      margin: 0 10px;
+      position: absolute;
+      bottom: -300px;
+      left: 10px;
     }
     #match-count-container {
-      margin: 0 10px;
-      display: inline-block;
+      position: absolute;
+      bottom: -340px;
+      right: 10px;
     }
     #rules {
       display: none;
@@ -171,28 +177,21 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    #controls-container {
-      height: 40px; /* Фиксированная высота для контейнера управления */
-      margin-bottom: 10px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <div id="controls-container">
-    <button id="rules-btn" onclick="toggleRules()">Правила</button>
-    <div id="match-count-container">
-      <label for="match-count">Количество спичек: </label>
-      <select id="match-count"></select>
-    </div>
-    <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
-  </div>
   <div id="button-container">
     <button id="check-btn" onclick="checkAnswers()" style="display: none;">Проверить</button>
     <button id="new-game-btn" onclick="resetGame(event)">Новая игра</button>
   </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
+  <button id="rules-btn" onclick="toggleRules()">Правила</button>
+  <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
+  <div id="match-count-container">
+    <label for="match-count">Количество спичек: </label>
+    <select id="match-count"></select>
+  </div>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <p><strong>Правила игры:</strong></p>
