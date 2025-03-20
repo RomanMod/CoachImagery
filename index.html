@@ -57,7 +57,28 @@
     }
     #result {
       margin-top: 20px;
-      min-height: 130px;
+      display: flex;
+      flex-direction: column; /* Столбик */
+      align-items: center; /* Центрирование по горизонтали */
+      gap: 10px; /* Расстояние между строками */
+    }
+    .result-row {
+      display: flex;
+      align-items: center; /* Вертикальное выравнивание текста и поля */
+      justify-content: center; /* Горизонтальное центрирование строки */
+      width: 300px; /* Фиксированная ширина для一致ности */
+    }
+    .result-row label {
+      flex: 1; /* Равномерное распределение пространства */
+      text-align: right; /* Выравнивание текста вправо */
+      margin-right: 10px; /* Отступ от поля ввода */
+    }
+    .result-row input {
+      margin-right: 10px; /* Отступ от результата */
+    }
+    .result-row .feedback {
+      flex: 1; /* Равномерное распределение пространства */
+      text-align: left; /* Выравнивание результата влево */
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -184,11 +205,26 @@
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <div id="result">
-    <p>Сколько спичек вверх? <input id="up" type="number" readonly></p>
-    <p>Сколько вниз? <input id="down" type="number" readonly></p>
-    <p>Сколько вправо? <input id="right" type="number" readonly></p>
-    <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <p id="feedback"></p>
+    <div class="result-row">
+      <label for="up">Сколько спичек вверх?</label>
+      <input id="up" type="number" readonly>
+      <span id="feedback-up" class="feedback"></span>
+    </div>
+    <div class="result-row">
+      <label for="down">Сколько вниз?</label>
+      <input id="down" type="number" readonly>
+      <span id="feedback-down" class="feedback"></span>
+    </div>
+    <div class="result-row">
+      <label for="right">Сколько вправо?</label>
+      <input id="right" type="number" readonly>
+      <span id="feedback-right" class="feedback"></span>
+    </div>
+    <div class="result-row">
+      <label for="left">Сколько влево?</label>
+      <input id="left" type="number" readonly>
+      <span id="feedback-left" class="feedback"></span>
+    </div>
   </div>
   <div id="custom-keyboard">
     <button onclick="addNumber('1')">1</button>
@@ -406,13 +442,10 @@
         left: matches.filter(d => d === 'left').length
       };
 
-      let feedback = `
-        Вверх: <span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span><br>
-        Вниз: <span class="${down === actual.down ? 'correct' : 'incorrect'}">${actual.down}</span><br>
-        Вправо: <span class="${right === actual.right ? 'correct' : 'incorrect'}">${actual.right}</span><br>
-        Влево: <span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span>
-      `;
-      document.getElementById('feedback').innerHTML = feedback;
+      document.getElementById('feedback-up').innerHTML = `<span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span>`;
+      document.getElementById('feedback-down').innerHTML = `<span class="${down === actual.down ? 'correct' : 'incorrect'}">${actual.down}</span>`;
+      document.getElementById('feedback-right').innerHTML = `<span class="${right === actual.right ? 'correct' : 'incorrect'}">${actual.right}</span>`;
+      document.getElementById('feedback-left').innerHTML = `<span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span>`;
 
       const gameArea = document.getElementById('game-area');
       gameArea.innerHTML = '';
@@ -446,7 +479,10 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
-      document.getElementById('feedback').innerHTML = ''; // Очищаем результаты
+      document.getElementById('feedback-up').innerHTML = '';
+      document.getElementById('feedback-down').innerHTML = '';
+      document.getElementById('feedback-right').innerHTML = '';
+      document.getElementById('feedback-left').innerHTML = '';
       gameStarted = false;
       startGame();
     }
