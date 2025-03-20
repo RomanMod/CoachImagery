@@ -57,9 +57,8 @@
       top: -2.5px;
     }
     #result {
-      display: none;
       margin-top: 20px;
-      min-height: 130px; /* Уменьшено, так как клавиатура вынесена */
+      min-height: 130px; /* Высота для полей ввода */
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -77,6 +76,7 @@
     #check-btn {
       padding: 15px 40px;
       font-size: 16px;
+      display: none; /* Скрыт по умолчанию */
     }
     input[type="number"] {
       background: #606060;
@@ -183,7 +183,7 @@
 </head>
 <body>
   <div id="button-container">
-    <button id="check-btn" onclick="checkAnswers()" style="display: none;">Проверить</button>
+    <button id="check-btn" onclick="checkAnswers()">Проверить</button>
     <button id="new-game-btn" onclick="resetGame(event)">Новая игра</button>
   </div>
   <div id="game-area" onclick="resetGame(event)"></div>
@@ -355,7 +355,6 @@
 
       setTimeout(() => {
         gameArea.innerHTML = '';
-        document.getElementById('result').style.display = 'block';
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
@@ -445,7 +444,6 @@
 
     function resetGame(event) {
       event.stopPropagation();
-      document.getElementById('result').style.display = 'none';
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
       document.getElementById('check-btn').style.display = 'none';
