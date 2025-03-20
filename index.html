@@ -107,6 +107,11 @@
       bottom: -300px;
       left: 10px;
     }
+    #match-count-container {
+      position: absolute;
+      bottom: -340px;
+      right: 10px;
+    }
     #rules {
       display: none;
       margin: 20px auto;
@@ -172,15 +177,15 @@
   </style>
 </head>
 <body>
-  <div>
-    <label for="match-count">Количество спичек: </label>
-    <select id="match-count"></select>
-  </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <button id="new-game-btn" onclick="resetGame(event)" style="display: none;">Новая игра</button>
   <button id="rules-btn" onclick="toggleRules()">Правила</button>
   <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
+  <div id="match-count-container">
+    <label for="match-count">Количество спичек: </label>
+    <select id="match-count"></select>
+  </div>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <p><strong>Правила игры:</strong></p>
