@@ -58,27 +58,28 @@
     #result {
       margin-top: 20px;
       display: flex;
-      flex-direction: column; /* Столбик */
-      align-items: center; /* Центрирование по горизонтали */
-      gap: 10px; /* Расстояние между строками */
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
     }
     .result-row {
       display: flex;
-      align-items: center; /* Вертикальное выравнивание текста и поля */
-      justify-content: center; /* Горизонтальное центрирование строки */
-      width: 300px; /* Фиксированная ширина для一致ности */
+      align-items: center;
+      justify-content: center;
+      width: 300px;
     }
     .result-row label {
-      flex: 1; /* Равномерное распределение пространства */
-      text-align: right; /* Выравнивание текста вправо */
-      margin-right: 10px; /* Отступ от поля ввода */
+      flex: 1;
+      text-align: right;
+      margin-right: 10px;
     }
     .result-row input {
-      margin-right: 10px; /* Отступ от результата */
+      margin-right: 20px; /* Увеличено с 10px до 20px для смещения результата */
     }
     .result-row .feedback {
-      flex: 1; /* Равномерное распределение пространства */
-      text-align: left; /* Выравнивание результата влево */
+      flex: 1;
+      text-align: left;
+      margin-left: 20px; /* Добавлено смещение результата на 20px вправо */
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -206,22 +207,22 @@
   <button id="start-btn" onclick="startGame()">Начать</button>
   <div id="result">
     <div class="result-row">
-      <label for="up">Сколько спичек вверх?</label>
+      <label for="up">Сколько спичек вверх? ↑</label>
       <input id="up" type="number" readonly>
       <span id="feedback-up" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="down">Сколько вниз?</label>
+      <label for="down">Сколько вниз? ↓</label>
       <input id="down" type="number" readonly>
       <span id="feedback-down" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="right">Сколько вправо?</label>
+      <label for="right">Сколько вправо? →</label>
       <input id="right" type="number" readonly>
       <span id="feedback-right" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="left">Сколько влево?</label>
+      <label for="left">Сколько влево? ←</label>
       <input id="left" type="number" readonly>
       <span id="feedback-left" class="feedback"></span>
     </div>
