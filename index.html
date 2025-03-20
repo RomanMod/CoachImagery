@@ -73,13 +73,17 @@
       text-align: right;
       margin-right: 10px;
     }
+    .result-row .arrow {
+      font-size: 24px; /* Увеличенный размер стрелок */
+      vertical-align: middle; /* Выравнивание по вертикали с текстом */
+    }
     .result-row input {
-      margin-right: 20px; /* Увеличено с 10px до 20px для смещения результата */
+      margin-right: 20px;
     }
     .result-row .feedback {
       flex: 1;
       text-align: left;
-      margin-left: 20px; /* Добавлено смещение результата на 20px вправо */
+      margin-left: 20px;
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -207,22 +211,22 @@
   <button id="start-btn" onclick="startGame()">Начать</button>
   <div id="result">
     <div class="result-row">
-      <label for="up">Сколько спичек вверх? ↑</label>
+      <label for="up">Сколько спичек вверх? <span class="arrow">↑</span></label>
       <input id="up" type="number" readonly>
       <span id="feedback-up" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="down">Сколько вниз? ↓</label>
+      <label for="down">Сколько вниз? <span class="arrow">↓</span></label>
       <input id="down" type="number" readonly>
       <span id="feedback-down" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="right">Сколько вправо? →</label>
+      <label for="right">Сколько вправо? <span class="arrow">→</span></label>
       <input id="right" type="number" readonly>
       <span id="feedback-right" class="feedback"></span>
     </div>
     <div class="result-row">
-      <label for="left">Сколько влево? ←</label>
+      <label for="left">Сколько влево? <span class="arrow">←</span></label>
       <input id="left" type="number" readonly>
       <span id="feedback-left" class="feedback"></span>
     </div>
