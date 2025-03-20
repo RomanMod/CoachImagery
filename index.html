@@ -23,6 +23,7 @@
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      position: relative; /* Для позиционирования #controls-container */
     }
     #game-area {
       width: 300px;
@@ -58,7 +59,7 @@
     #result {
       display: none;
       margin-top: 20px;
-      min-height: 349px; /* Фиксируем высоту: 120px (поля ввода) + 219px (клавиатура) + 10px (margin клавиатуры) */
+      min-height: 349px; /* Фиксируем высоту для клавиатуры */
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -106,7 +107,10 @@
       display: inline-block;
     }
     #controls-container {
-      margin-top: 10px; /* Отступ сверху от клавиатуры */
+      position: absolute;
+      bottom: 20px; /* Отступ от нижнего края */
+      left: 0;
+      right: 0;
       text-align: center;
     }
     #rules {
