@@ -16,7 +16,7 @@
     body {
       text-align: center;
       font-family: Arial, sans-serif;
-      margin: 10px; /* Уменьшено с 20px до 10px */
+      margin: 10px;
       background: #1C2526;
       color: #D3D3D3;
       min-height: 100vh;
@@ -30,7 +30,7 @@
       background: #666666;
       border: 1px solid #606060;
       position: relative;
-      margin: 10px auto; /* Уменьшено с 20px до 10px */
+      margin: 10px auto;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -170,8 +170,8 @@
       border: 2px solid #DAA520;
     }
     #button-container {
-      height: 40px; /* Уменьшено с 50px до 40px */
-      margin-bottom: 5px; /* Уменьшено с 10px до 5px */
+      height: 40px;
+      margin-bottom: 5px;
       text-align: center;
     }
   </style>
@@ -188,7 +188,7 @@
     <p>Сколько вниз? <input id="down" type="number" readonly></p>
     <p>Сколько вправо? <input id="right" type="number" readonly></p>
     <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <p id="feedback">Ожидание проверки...</p>
+    <p id="feedback"></p> <!-- Убрано "Ожидание проверки..." -->
   </div>
   <div id="custom-keyboard">
     <button onclick="addNumber('1')">1</button>
@@ -353,7 +353,7 @@
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
-        document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
+        // Убрано: document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
       }, 3000);
     }
 
@@ -447,7 +447,7 @@
       document.getElementById('down').value = '';
       document.getElementById('right').value = '';
       document.getElementById('left').value = '';
-      document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
+      // Убрано: document.getElementById('feedback').innerHTML = 'Ожидание проверки...';
       gameStarted = false;
       startGame();
     }
