@@ -95,20 +95,18 @@
       margin: 0 10px;
     }
     #shadow-btn {
-      position: absolute;
-      bottom: 50px; /* Отступ от нижнего края 50px */
-      right: 50px; /* Отступ от правого края 50px */
-      padding: 10px 20px;
+      margin: 0 10px;
     }
     #rules-btn {
-      position: absolute;
-      bottom: 50px; /* Отступ от нижнего края 50px */
-      left: 50px; /* Отступ от левого края 50px */
+      margin-left: 50px; /* Отступ слева 50px */
     }
     #match-count-container {
-      position: absolute;
-      bottom: 50px; /* Отступ от нижнего края 50px */
-      right: 50px; /* Отступ от правого края 50px */
+      margin-right: 50px; /* Отступ справа 50px */
+      display: inline-block;
+    }
+    #controls-container {
+      margin-top: 10px; /* Отступ сверху от клавиатуры */
+      text-align: center;
     }
     #rules {
       display: none;
@@ -186,11 +184,34 @@
   </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
-  <button id="rules-btn" onclick="toggleRules()">Правила</button>
-  <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
-  <div id="match-count-container">
-    <label for="match-count">Количество спичек: </label>
-    <select id="match-count"></select>
+  <div id="result">
+    <p>Сколько спичек вверх? <input id="up" type="number" readonly></p>
+    <p>Сколько вниз? <input id="down" type="number" readonly></p>
+    <p>Сколько вправо? <input id="right" type="number" readonly></p>
+    <p>Сколько влево? <input id="left" type="number" readonly></p>
+    <div id="custom-keyboard">
+      <button onclick="addNumber('1')">1</button>
+      <button onclick="addNumber('2')">2</button>
+      <button onclick="addNumber('3')">3</button>
+      <button onclick="addNumber('4')">4</button>
+      <button onclick="addNumber('5')">5</button>
+      <button onclick="addNumber('6')">6</button>
+      <button onclick="addNumber('7')">7</button>
+      <button onclick="addNumber('8')">8</button>
+      <button onclick="addNumber('9')">9</button>
+      <span class="spacer"></span>
+      <button onclick="addNumber('0')">0</button>
+      <button onclick="deleteNumber()" class="delete-btn">⌫</button>
+    </div>
+    <p id="feedback"></p>
+  </div>
+  <div id="controls-container">
+    <button id="rules-btn" onclick="toggleRules()">Правила</button>
+    <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
+    <div id="match-count-container">
+      <label for="match-count">Количество спичек: </label>
+      <select id="match-count"></select>
+    </div>
   </div>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
@@ -233,27 +254,6 @@
     <p><strong>Процесс:</strong> Остановить внутренний диалог, бросить быстрый короткий взгляд (сфотографировать).</p>
     <p><strong>Возможные побочные действия:</strong> Через годы тренировок внимание внутреннего взора оживает, становится подобно вниманию сновидения за счёт большого вложения энергии. Это может задействоваться в грёзах и ясновидении.</p>
     <p><strong>Рекомендации:</strong> В день делать много повторов. Если получается удержать картинку на мгновение, сделай минимум 60 повторов. Первый этап — удерживать картинку во внутреннем взоре минуту.</p>
-  </div>
-  <div id="result">
-    <p>Сколько спичек вверх? <input id="up" type="number" readonly></p>
-    <p>Сколько вниз? <input id="down" type="number" readonly></p>
-    <p>Сколько вправо? <input id="right" type="number" readonly></p>
-    <p>Сколько влево? <input id="left" type="number" readonly></p>
-    <div id="custom-keyboard">
-      <button onclick="addNumber('1')">1</button>
-      <button onclick="addNumber('2')">2</button>
-      <button onclick="addNumber('3')">3</button>
-      <button onclick="addNumber('4')">4</button>
-      <button onclick="addNumber('5')">5</button>
-      <button onclick="addNumber('6')">6</button>
-      <button onclick="addNumber('7')">7</button>
-      <button onclick="addNumber('8')">8</button>
-      <button onclick="addNumber('9')">9</button>
-      <span class="spacer"></span>
-      <button onclick="addNumber('0')">0</button>
-      <button onclick="deleteNumber()" class="delete-btn">⌫</button>
-    </div>
-    <p id="feedback"></p>
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
