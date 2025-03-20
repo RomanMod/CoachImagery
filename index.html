@@ -16,10 +16,10 @@
     body {
       text-align: center;
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 10px; /* Уменьшено с 20px до 10px */
       background: #1C2526;
       color: #D3D3D3;
-      min-height: 100vh; /* Чтобы контент мог прокручиваться */
+      min-height: 100vh;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -30,7 +30,7 @@
       background: #666666;
       border: 1px solid #606060;
       position: relative;
-      margin: 20px auto;
+      margin: 10px auto; /* Уменьшено с 20px до 10px */
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -57,12 +57,12 @@
     }
     #result {
       margin-top: 20px;
-      min-height: 130px; /* Высота для полей ввода */
+      min-height: 130px;
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
     button {
-      padding: 10px 20px; /* Стандартный размер для всех кнопок */
+      padding: 10px 20px;
       background: #606060;
       color: #D3D3D3;
       border: none;
@@ -73,7 +73,7 @@
       background: #808080;
     }
     #check-btn {
-      display: none; /* Скрыт по умолчанию */
+      display: none;
     }
     input[type="number"] {
       background: #606060;
@@ -97,16 +97,16 @@
       margin: 0 10px;
     }
     #rules-btn {
-      margin-left: 50px; /* Отступ слева 50px */
+      margin-left: 50px;
     }
     #match-count-container {
-      margin-right: 50px; /* Отступ справа 50px */
+      margin-right: 50px;
       display: inline-block;
     }
     #controls-container {
-      margin: 10px auto; /* Отступ сверху и центрирование */
+      margin: 10px auto;
       text-align: center;
-      width: 300px; /* Фиксированная ширина, как у клавиатуры */
+      width: 300px;
     }
     #rules {
       display: none;
@@ -141,7 +141,7 @@
       background: #2C3536;
       padding: 10px;
       border-radius: 5px;
-      display: grid; /* Постоянно отображается */
+      display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 5px;
     }
@@ -170,8 +170,8 @@
       border: 2px solid #DAA520;
     }
     #button-container {
-      height: 50px; /* Фиксированная высота для контейнера кнопок */
-      margin-bottom: 10px;
+      height: 40px; /* Уменьшено с 50px до 40px */
+      margin-bottom: 5px; /* Уменьшено с 10px до 5px */
       text-align: center;
     }
   </style>
