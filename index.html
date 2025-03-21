@@ -222,6 +222,13 @@
     #custom-keyboard .delete-btn:hover {
       background: #808080;
     }
+    #custom-keyboard .ok-btn {
+      background: #DAA520;
+      color: #1C2526;
+    }
+    #custom-keyboard .ok-btn:hover {
+      background: #FFB84D;
+    }
     input.active {
       border: 2px solid #DAA520;
     }
@@ -292,9 +299,9 @@
     <button onclick="addNumber('7')">7</button>
     <button onclick="addNumber('8')">8</button>
     <button onclick="addNumber('9')">9</button>
-    <span class="spacer"></span>
-    <button onclick="addNumber('0')">0</button>
     <button onclick="deleteNumber()" class="delete-btn">⌫</button>
+    <button onclick="addNumber('0')">0</button>
+    <button onclick="checkAnswers()" class="ok-btn">ОК</button>
   </div>
   <div id="controls-container">
     <button id="rules-btn" onclick="toggleRules()">Правила</button>
