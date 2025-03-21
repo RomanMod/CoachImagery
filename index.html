@@ -75,6 +75,7 @@
       width: 70px;
       text-align: right;
       margin-right: 10px;
+      white-space: nowrap; /* Предотвращает перенос текста со стрелкой */
     }
     .result-row .arrow {
       font-size: 24px;
@@ -83,7 +84,7 @@
     .result-row .feedback {
       width: 50px;
       text-align: left;
-      margin-left: 10px;
+      margin-left: 15px; /* Отступ 15px от кнопки + */
     }
     .input-container {
       display: flex;
@@ -226,7 +227,7 @@
       text-align: center;
     }
     #question {
-      margin: 10px 0;
+      margin: 5px 0; /* Уменьшен отступ сверху на 5px (было 10px) */
       font-weight: bold;
     }
   </style>
