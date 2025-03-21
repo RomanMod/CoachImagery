@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Игра со спичками</title>
+  <title>Игра со спичками organisaties<title>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4QJLM5LTM"></script>
   <script>
@@ -77,13 +77,26 @@
       font-size: 24px;
       vertical-align: middle;
     }
-    .result-row input {
-      margin-right: 20px;
-    }
     .result-row .feedback {
       flex: 1;
       text-align: left;
       margin-left: 20px;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-right: 20px;
+    }
+    .input-container button {
+      padding: 5px 10px;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .input-container input {
+      margin-right: 0;
     }
     .correct { color: #00FF00; }
     .incorrect { color: #FF0000; }
@@ -221,22 +234,38 @@
   <div id="result">
     <div class="result-row">
       <label for="up">Сколько спичек вверх? <span class="arrow">↑</span></label>
-      <input id="up" type="number" readonly>
+      <div class="input-container">
+        <button onclick="changeAnswer('up', -1)">−</button>
+        <input id="up" type="number" readonly>
+        <button onclick="changeAnswer('up', 1)">+</button>
+      </div>
       <span id="feedback-up" class="feedback"></span>
     </div>
     <div class="result-row">
       <label for="down">Сколько вниз? <span class="arrow">↓</span></label>
-      <input id="down" type="number" readonly>
+      <div class="input-container">
+        <button onclick="changeAnswer('down', -1)">−</button>
+        <input id="down" type="number" readonly>
+        <button onclick="changeAnswer('down', 1)">+</button>
+      </div>
       <span id="feedback-down" class="feedback"></span>
     </div>
     <div class="result-row">
       <label for="right">Сколько вправо? <span class="arrow">→</span></label>
-      <input id="right" type="number" readonly>
+      <div class="input-container">
+        <button onclick="changeAnswer('right', -1)">−</button>
+        <input id="right" type="number" readonly>
+        <button onclick="changeAnswer('right', 1)">+</button>
+      </div>
       <span id="feedback-right" class="feedback"></span>
     </div>
     <div class="result-row">
       <label for="left">Сколько влево? <span class="arrow">←</span></label>
-      <input id="left" type="number" readonly>
+      <div class="input-container">
+        <button onclick="changeAnswer('left', -1)">−</button>
+        <input id="left" type="number" readonly>
+        <button onclick="changeAnswer('left', 1)">+</button>
+      </div>
       <span id="feedback-left" class="feedback"></span>
     </div>
   </div>
@@ -461,7 +490,7 @@
       document.getElementById('feedback-up').innerHTML = `<span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span>`;
       document.getElementById('feedback-down').innerHTML = `<span class="${down === actual.down ? 'correct' : 'incorrect'}">${actual.down}</span>`;
       document.getElementById('feedback-right').innerHTML = `<span class="${right === actual.right ? 'correct' : 'incorrect'}">${actual.right}</span>`;
-      document.getElementById('feedback-left').innerHTML = `<span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span>`;
+      document.getElementById('feedback-left').innerHTML = `<span class="${left === actual.left ? 'correct' : 'incorrect'}">${actual.left}</span}`;
 
       const gameArea = document.getElementById('game-area');
       gameArea.innerHTML = '';
@@ -510,6 +539,16 @@
       
       if (newValue >= 3 && newValue <= 80) {
         select.value = newValue;
+      }
+    }
+
+    function changeAnswer(direction, delta) {
+      const input = document.getElementById(direction);
+      let currentValue = parseInt(input.value) || 0;
+      let newValue = currentValue + delta;
+      
+      if (newValue >= 0 && newValue <= 80) {
+        input.value = newValue;
       }
     }
 
