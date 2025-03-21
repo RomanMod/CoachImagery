@@ -75,7 +75,7 @@
       width: 70px;
       text-align: right;
       margin-right: 10px;
-      white-space: nowrap; /* Предотвращает перенос текста со стрелкой */
+      white-space: nowrap;
     }
     .result-row .arrow {
       font-size: 24px;
@@ -84,7 +84,7 @@
     .result-row .feedback {
       width: 50px;
       text-align: left;
-      margin-left: 55px; /* Изменен отступ результатов до 55px от кнопки + */
+      margin-left: 55px;
     }
     .input-container {
       display: flex;
@@ -162,22 +162,26 @@
     }
     #rules {
       display: none;
-      margin: 20px auto;
-      max-width: 300px;
-      text-align: left;
-      font-size: 14px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: #2C3536;
       padding: 40px 10px 10px 10px;
-      border-radius: 5px;
-      white-space: pre-wrap;
-      position: relative;
+      text-align: left;
+      font-size: 14px;
+      color: #D3D3D3;
+      overflow-y: auto;
+      z-index: 1000;
+      box-sizing: border-box;
     }
     #close-rules-btn {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      padding: 4px 8px;
-      font-size: 12px;
+      top: 10px;
+      right: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
       background: #808080;
       color: #D3D3D3;
       border: none;
@@ -227,7 +231,7 @@
       text-align: center;
     }
     #question {
-      margin: 5px 0; /* Уменьшен отступ сверху на 5px */
+      margin: 5px 0;
       font-weight: bold;
     }
   </style>
