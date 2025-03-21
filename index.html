@@ -68,11 +68,10 @@
     .result-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       width: 100%;
     }
     .result-row label {
-      width: 90px; /* Увеличено с 80px до 90px */
+      width: 90px;
       text-align: right;
       margin-right: 15px;
       white-space: nowrap;
@@ -84,13 +83,15 @@
     .result-row .feedback {
       width: 50px;
       text-align: left;
-      margin-left: 55px;
+      margin-left: 15px; /* Уменьшено с 55px */
     }
     .input-container {
       display: flex;
       align-items: center;
       gap: 5px;
       width: 110px;
+      margin-left: auto; /* Выравниваем поля ввода по правому краю */
+      margin-right: 0;
     }
     .input-container button {
       padding: 5px 10px;
