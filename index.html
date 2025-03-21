@@ -65,6 +65,8 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    
     .result-row {
       display: flex;
       align-items: center;
@@ -72,10 +74,17 @@
     }
     
     .result-row label {
-      width: 90px;
       text-align: right;
-      margin-right: 10px;
+      margin-right: 10px; /* Отступ между текстом и контейнером ввода */
       white-space: nowrap;
+    }
+    
+    .result-row .input-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 110px; /* Фиксированная ширина контейнера ввода */
+      margin-left: 10px; /* Дополнительный отступ слева для выравнивания */
     }
     
     .result-row .arrow {
@@ -88,6 +97,8 @@
       text-align: left;
       margin-left: 60px;
     }
+    
+    
     .input-container {
       display: flex;
       align-items: center;
