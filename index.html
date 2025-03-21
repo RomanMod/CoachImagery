@@ -317,32 +317,32 @@
     <p><strong>Направления спичек:</strong></p>
     <p>Головка (красный круг) указывает направление:</p>
     <pre>
-        270° (Вверх)
+        0° (Вверх)
            ↑
            |> 
            |
-225°       |       315°
+315°       |       45°
   ↖        |        ↗  
     ↖      |      ↗    
       ↖    |    ↗      
         ↖  |  ↗        
           ↖|↗          
-135°  <----+---->  45°
+270°  <----+---->  90°
 (Влево)    |     (Вправо)
         ↙  |  ↘        
       ↙    |    ↘      
     ↙      |      ↘    
   ↙        |        ↘  
-180°       |       0°/360°
+225°       |       135°
            | 
            |> 
            ↓
-        90° (Вниз)
+        180° (Вниз)
     </pre>
-    <p>- 225°–315°: Вверх</p>
-    <p>- 315°–45°: Вправо</p>
-    <p>- 45°–135°: Вниз</p>
-    <p>- 135°–225°: Влево</p>
+    <p>- 315°–45°: Вверх</p>
+    <p>- 45°–135°: Вправо</p>
+    <p>- 135°–225°: Вниз</p>
+    <p>- 225°–315°: Влево</p>
     <p><strong>Цель:</strong> Развитие контроля внимания, тренировка внутреннего взора.</p>
     <p><strong>Процесс:</strong> Остановить внутренний диалог, бросить быстрый короткий взгляд (сфотографировать).</p>
     <p><strong>Возможные побочные действия:</strong> Через годы тренировок внимание внутреннего взора оживает, становится подобно вниманию сновидения за счёт большого вложения энергии. Это может задействоваться в грёзах и ясновидении.</p>
@@ -429,11 +429,12 @@
         match.appendChild(head);
         gameArea.appendChild(match);
 
+        // New angle to direction mapping with 0° at top (12 o'clock)
         let direction = '';
-        if (angle >= 45 && angle < 135) direction = 'down';
-        else if (angle >= 135 && angle < 225) direction = 'left';
-        else if (angle >= 225 && angle < 315) direction = 'up';
-        else direction = 'right';
+        if (angle >= 315 || angle < 45) direction = 'up';      // 12 o'clock
+        else if (angle >= 45 && angle < 135) direction = 'right'; // 3 o'clock
+        else if (angle >= 135 && angle < 225) direction = 'down';  // 6 o'clock
+        else direction = 'left';                                // 9 o'clock
 
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
