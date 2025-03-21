@@ -74,8 +74,8 @@
       margin-right: 10px;
     }
     .result-row .arrow {
-      font-size: 24px; /* Увеличенный размер стрелок */
-      vertical-align: middle; /* Выравнивание по вертикали с текстом */
+      font-size: 24px;
+      vertical-align: middle;
     }
     .result-row input {
       margin-right: 20px;
@@ -127,7 +127,16 @@
     }
     #match-count-container {
       margin-right: 50px;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    #match-count-container button {
+      padding: 5px 10px;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      line-height: 1;
     }
     #controls-container {
       margin: 10px auto;
@@ -249,8 +258,10 @@
     <button id="rules-btn" onclick="toggleRules()">Правила</button>
     <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
     <div id="match-count-container">
-      <label for="match-count">Количество спичек: </label>
-      <select id="match-count"></select>
+        <label for="match-count">Количество спичек: </label>
+        <button onclick="changeMatchCount(-1)">−</button>
+        <select id="match-count"></select>
+        <button onclick="changeMatchCount(1)">+</button>
     </div>
   </div>
   <div id="rules">
@@ -490,6 +501,16 @@
       document.getElementById('feedback-left').innerHTML = '';
       gameStarted = false;
       startGame();
+    }
+
+    function changeMatchCount(delta) {
+      const select = document.getElementById('match-count');
+      let currentValue = parseInt(select.value);
+      let newValue = currentValue + delta;
+      
+      if (newValue >= 3 && newValue <= 80) {
+        select.value = newValue;
+      }
     }
 
     window.Telegram.WebApp.expand();
