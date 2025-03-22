@@ -55,57 +55,54 @@
       right: -5px;
       top: -2.5px;
     }
-    #result {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+    #result-panel {
       width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 10px auto;
+      /*background: #2C3536;*/
+      padding: 10px;
+      border-radius: 5px;
+      display: grid;
+      /* Столбцы: 95px (слово "Вправо" ~60px + стрелка ~28px + запас 5px), 125px (кнопка 30px + ввод 50px + кнопка 30px + gap 10px + запас 5px), 40px (результат) */
+      grid-template-columns: 100px 160px 40px;
+      gap: 0; /* Расстояние между столбцами = 0px */
     }
-
-    
+    #question {
+      grid-column: 1 / -1; /* Занимает все столбцы */
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 0px; /* Отступ снизу перед таблицей */
+    }
     .result-row {
-      display: flex;
-      align-items: center;
-      width: 100%;
+      display: contents; /* Дети становятся частью grid */
     }
-    
     .result-row label {
       text-align: right;
-      margin-right: 10px; /* Отступ между текстом и контейнером ввода */
       white-space: nowrap;
+      /* Отступ: сверху 10px, справа 10px, снизу 10px, слева 0px */
+      padding: 5px 5px 5px 0;
+      /*background: #3A4445;  Временный цвет для первого столбца */
     }
-    
     .result-row .input-container {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      width: 110px; /* Фиксированная ширина контейнера ввода */
-      margin-left: 10px; /* Дополнительный отступ слева для выравнивания */
+      /* Убрано justify-self: center, теперь прижато к левому краю второго столбца */
+      /* Отступ: сверху 10px, справа 10px, снизу 10px, слева 0px */
+      padding: 5px 5px 5px 0;
+      /*background: #606060;  Временный цвет для второго столбца */
     }
-    
     .result-row .arrow {
       font-size: 28px;
       vertical-align: middle;
     }
-    
     .result-row .feedback {
-      width: 40px;
       text-align: left;
-      margin-left: 60px;
+      /* Отступ 10px со всех сторон для третьего столбца */
+      padding: 10px;
+      /*background: #808080;  Временный цвет для третьего столбца */
     }
-    
-    
     .input-container {
       display: flex;
       align-items: center;
       gap: 5px;
-      width: 110px;
-      margin-left: auto;
-      margin-right: 35;
+      width: 160px; /* Расширено до 125px для кнопки "−" (30px), ввода (50px), кнопки "+" (30px), gap (10px) и запаса (5px) */
     }
     .input-container button {
       padding: 5px 10px;
@@ -254,10 +251,6 @@
       margin-bottom: 5px;
       text-align: center;
     }
-    #question {
-      margin: 5px 0;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -267,7 +260,7 @@
   </div>
   <div id="game-area" onclick="resetGame(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
-  <div id="result">
+  <div id="result-panel">
     <div id="question">Сколько спичек?</div>
     <div class="result-row">
       <label>Вверх <span class="arrow">↑</span></label>
@@ -392,7 +385,7 @@
       matchCountSelect.appendChild(option);
     }
 
-    const inputs = document.querySelectorAll('#result input');
+    const inputs = document.querySelectorAll('#result-panel input');
     inputs.forEach(input => {
       input.addEventListener('click', () => {
         inputs.forEach(inp => inp.classList.remove('active'));
