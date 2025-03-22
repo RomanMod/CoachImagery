@@ -440,14 +440,22 @@
         match.appendChild(head);
         gameArea.appendChild(match);
 
-        // Новая логика направлений по часовой системе
         let direction = '';
         let normalizedAngle = (angle + 360) % 360;
         
-        if (normalizedAngle >= 315 || normalizedAngle < 45) direction = 'up';      // 12 часов ±45° (315°-45°)
-        else if (normalizedAngle >= 45 && normalizedAngle < 135) direction = 'right';  // 3 часа ±45° (45°-135°)
-        else if (normalizedAngle >= 135 && normalizedAngle < 225) direction = 'down';  // 6 часов ±45° (135°-225°)
-        else if (normalizedAngle >= 225 && normalizedAngle < 315) direction = 'left';  // 9 часов ±45° (225°-315°)
+        // Явная проверка диапазонов
+        if (normalizedAngle >= 45 && normalizedAngle < 135) {
+          direction = 'right'; // 45°–135°
+        } else if (normalizedAngle >= 135 && normalizedAngle < 225) {
+          direction = 'down'; // 135°–225°
+        } else if (normalizedAngle >= 225 && normalizedAngle < 315) {
+          direction = 'left'; // 225°–315°
+        } else {
+          direction = 'up'; // 315°–45°
+        }
+
+        // Отладочный вывод
+        console.log(`Match ${i + 1}: angle = ${angle}, normalizedAngle = ${normalizedAngle}, direction = ${direction}`);
 
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
