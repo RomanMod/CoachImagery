@@ -432,7 +432,9 @@
         if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = x + 'px';
         match.style.top = y + 'px';
-        match.style.transform = `rotate(${angle}deg)`;
+        // Корректируем угол поворота: вычитаем 90°, чтобы 0° соответствовал "вверх"
+        const displayAngle = (angle - 90 + 360) % 360;
+        match.style.transform = `rotate(${displayAngle}deg)`;
         match.style.zIndex = zIndex;
 
         const head = document.createElement('div');
@@ -443,7 +445,7 @@
         let direction = '';
         let normalizedAngle = (angle + 360) % 360;
         
-        // Явная проверка диапазонов
+        // Классификация направления на основе исходного угла
         if (normalizedAngle >= 45 && normalizedAngle < 135) {
           direction = 'right'; // 45°–135°
         } else if (normalizedAngle >= 135 && normalizedAngle < 225) {
@@ -455,7 +457,7 @@
         }
 
         // Отладочный вывод
-        console.log(`Match ${i + 1}: angle = ${angle}, normalizedAngle = ${normalizedAngle}, direction = ${direction}`);
+        console.log(`Match ${i + 1}: angle = ${angle}, normalizedAngle = ${normalizedAngle}, displayAngle = ${displayAngle}, direction = ${direction}`);
 
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
@@ -535,7 +537,9 @@
         if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = pos.x + 'px';
         match.style.top = pos.y + 'px';
-        match.style.transform = `rotate(${pos.angle}deg)`;
+        // Применяем тот же скорректированный угол для отображения
+        const displayAngle = (pos.angle - 90 + 360) % 360;
+        match.style.transform = `rotate(${displayAngle}deg)`;
         match.style.zIndex = pos.zIndex;
 
         const head = document.createElement('div');
