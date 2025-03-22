@@ -58,35 +58,28 @@
     #result-panel {
       width: 300px;
       margin: 10px auto;
-      /*background: #2C3536;*/
       padding: 10px;
       border-radius: 5px;
       display: grid;
-      /* Столбцы: 95px (слово "Вправо" ~60px + стрелка ~28px + запас 5px), 125px (кнопка 30px + ввод 50px + кнопка 30px + gap 10px + запас 5px), 40px (результат) */
       grid-template-columns: 100px 160px 40px;
-      gap: 0; /* Расстояние между столбцами = 0px */
+      gap: 0;
     }
     #question {
-      grid-column: 1 / -1; /* Занимает все столбцы */
+      grid-column: 1 / -1;
       text-align: center;
       font-weight: bold;
-      margin-bottom: 0px; /* Отступ снизу перед таблицей */
+      margin-bottom: 0px;
     }
     .result-row {
-      display: contents; /* Дети становятся частью grid */
+      display: contents;
     }
     .result-row label {
       text-align: right;
       white-space: nowrap;
-      /* Отступ: сверху 10px, справа 10px, снизу 10px, слева 0px */
       padding: 5px 5px 5px 0;
-      /*background: #3A4445;  Временный цвет для первого столбца */
     }
     .result-row .input-container {
-      /* Убрано justify-self: center, теперь прижато к левому краю второго столбца */
-      /* Отступ: сверху 10px, справа 10px, снизу 10px, слева 0px */
       padding: 5px 5px 5px 0;
-      /*background: #606060;  Временный цвет для второго столбца */
     }
     .result-row .arrow {
       font-size: 28px;
@@ -94,15 +87,13 @@
     }
     .result-row .feedback {
       text-align: left;
-      /* Отступ 10px со всех сторон для третьего столбца */
       padding: 10px;
-      /*background: #808080;  Временный цвет для третьего столбца */
     }
     .input-container {
       display: flex;
       align-items: center;
       gap: 5px;
-      width: 160px; /* Расширено до 125px для кнопки "−" (30px), ввода (50px), кнопки "+" (30px), gap (10px) и запаса (5px) */
+      width: 160px;
     }
     .input-container button {
       padding: 5px 10px;
@@ -333,34 +324,35 @@
       <p>4. Нажми "Проверить" для результата.</p>
       <p>5. Кликни по полю для новой игры.</p>
       <p><strong>Направления спичек:</strong></p>
-      <p>Головка (красный круг) указывает направление:</p>
+      <p>Головка (красный круг) указывает направление по часовой системе:</p>
       <pre>
-         0° (Вверх)
+       0°/360° (Вверх)
+          12
            ↑
            |> 
            |
 315°       |       45°
-  ↖        |        ↗  
+  ↖ 11     |     1 ↗  
     ↖      |      ↗    
       ↖    |    ↗      
+   10  ↖   |   ↗  2    
         ↖  |  ↗        
-          ↖|↗          
-225°  <----+---->  135°
-(Влево)    |     (Вправо)
+270° <-----+-----> 90°
+  9       3      (Вправо)
         ↙  |  ↘        
       ↙    |    ↘      
     ↙      |      ↘    
-  ↙        |        ↘  
-270°       |       180°
+  ↙   8    |    4  ↘  
+180°       |       135°
            | 
            |> 
            ↓
-        90° (Вниз)
+         6 (Вниз)
       </pre>
-      <p>- 315°–45°: Вверх</p>
-      <p>- 45°–135°: Вправо</p>
-      <p>- 135°–225°: Вниз</p>
-      <p>- 225°–315°: Влево</p>
+      <p>- 315°–45°: Вверх (около 12 часов)</p>
+      <p>- 45°–135°: Вправо (около 3 часов)</p>
+      <p>- 135°–225°: Вниз (около 6 часов)</p>
+      <p>- 225°–315°: Влево (около 9 часов)</p>
       <p><strong>Цель:</strong> Развитие контроля внимания, тренировка внутреннего взора.</p>
       <p><strong>Процесс:</strong> Остановить внутренний диалог, бросить быстрый короткий взгляд (сфотографировать).</p>
       <p><strong>Возможные побочные действия:</strong> Через годы тренировок внимание внутреннего взора оживает, становится подобно вниманию сновидения за счёт большого вложения энергии. Это может задействоваться в грёзах и ясновидении.</p>
@@ -448,11 +440,14 @@
         match.appendChild(head);
         gameArea.appendChild(match);
 
+        // Новая логика направлений по часовой системе
         let direction = '';
-        if (angle >= 315 || angle < 45) direction = 'up';    // 315°-45° = верх
-        else if (angle >= 45 && angle < 135) direction = 'right';  // 45°-135° = право
-        else if (angle >= 135 && angle < 225) direction = 'down';  // 135°-225° = низ
-        else if (angle >= 225 && angle < 315) direction = 'left';  // 225°-315° = лево
+        let normalizedAngle = (angle + 360) % 360;
+        
+        if (normalizedAngle >= 315 || normalizedAngle < 45) direction = 'up';      // 12 часов ±45° (315°-45°)
+        else if (normalizedAngle >= 45 && normalizedAngle < 135) direction = 'right';  // 3 часа ±45° (45°-135°)
+        else if (normalizedAngle >= 135 && normalizedAngle < 225) direction = 'down';  // 6 часов ±45° (135°-225°)
+        else if (normalizedAngle >= 225 && normalizedAngle < 315) direction = 'left';  // 9 часов ±45° (225°-315°)
 
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
