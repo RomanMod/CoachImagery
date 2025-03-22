@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Игра со спичками</title>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4QJLM5LTM"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -11,7 +10,6 @@
     gtag('js', new Date());
     gtag('config', 'G-X4QJLM5LTM');
   </script>
-  <!-- Конец Google Analytics -->
   <style>
     body {
       text-align: center;
@@ -432,7 +430,6 @@
         if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = x + 'px';
         match.style.top = y + 'px';
-        // Корректируем угол поворота: вычитаем 90°, чтобы 0° соответствовал "вверх"
         const displayAngle = (angle - 90 + 360) % 360;
         match.style.transform = `rotate(${displayAngle}deg)`;
         match.style.zIndex = zIndex;
@@ -445,19 +442,15 @@
         let direction = '';
         let normalizedAngle = (angle + 360) % 360;
         
-        // Классификация направления на основе исходного угла
         if (normalizedAngle >= 45 && normalizedAngle < 135) {
-          direction = 'right'; // 45°–135°
+          direction = 'right';
         } else if (normalizedAngle >= 135 && normalizedAngle < 225) {
-          direction = 'down'; // 135°–225°
+          direction = 'down';
         } else if (normalizedAngle >= 225 && normalizedAngle < 315) {
-          direction = 'left'; // 225°–315°
+          direction = 'left';
         } else {
-          direction = 'up'; // 315°–45°
+          direction = 'up';
         }
-
-        // Отладочный вывод
-        console.log(`Match ${i + 1}: angle = ${angle}, normalizedAngle = ${normalizedAngle}, displayAngle = ${displayAngle}, direction = ${direction}`);
 
         matches.push(direction);
         matchPositions.push({ x, y, angle, zIndex });
@@ -537,7 +530,6 @@
         if (shadowEnabled) match.classList.add('with-shadow');
         match.style.left = pos.x + 'px';
         match.style.top = pos.y + 'px';
-        // Применяем тот же скорректированный угол для отображения
         const displayAngle = (pos.angle - 90 + 360) % 360;
         match.style.transform = `rotate(${displayAngle}deg)`;
         match.style.zIndex = pos.zIndex;
