@@ -330,6 +330,8 @@
     <button onclick="addNumber('4')">4</button>
     <button onclick="addNumber('5')">5</button>
     <button onclick="addNumber('6')">6</button>
+    <button onclick="addNumberongono
+
     <button onclick="addNumber('7')">7</button>
     <button onclick="addNumber('8')">8</button>
     <button onclick="addNumber('9')">9</button>
@@ -419,19 +421,65 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
+    // Параметр для включения/отключения логов
+    const debug = true;
+
+    // Функция для логирования
+    function logDebug(message, data = null) {
+      if (debug) {
+        console.log(`[DEBUG] ${message}`, data || '');
+      }
+    }
+
     let matches = [];
     let matchPositions = [];
     let gameStarted = false;
     let activeInput = null;
     let shadowEnabled = false;
     let keyboardEnabled = true;
-    let matchCount = 3; // Начальное значение количества спичек
-    let viewTime = 3000; // Начальное значение времени созерцания (в миллисекундах)
+    let matchCount = 3;
+    let viewTime = 3000;
+    let restartCount = 0;
+    let sessionId = generateSessionId();
+    let gameStartTime = null;
+    let lastInteraction = performance.now();
 
     const matchCountDisplay = document.getElementById('match-count');
     const viewTimeDisplay = document.getElementById('view-time');
 
-    // Инициализация начальных значений
+    function generateSessionId() {
+      const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      logDebug('Generated session ID', { sessionId: id });
+      return id;
+    }
+
+    function setUserProperties() {
+      const properties = {
+        preferred_language: 'ru',
+        shadow_preference: shadowEnabled ? 'on' : 'off',
+        keyboard_preference: keyboardEnabled ? 'on' : 'off',
+        average_match_count: matchCount,
+        average_view_time: viewTime / 1000
+      };
+      gtag('set', 'user_properties', properties);
+      logDebug('Set user properties', properties);
+    }
+
+    window.addEventListener('load', () => {
+      const eventData = {
+        platform: 'Telegram WebApp',
+        version: '1.0',
+        language: 'ru',
+        session_id: sessionId
+      };
+      gtag('event', 'game_init', eventData);
+      logDebug('Game initialized', eventData);
+      setUserProperties();
+    });
+
     matchCountDisplay.textContent = matchCount;
     viewTimeDisplay.textContent = viewTime / 1000 + ' сек';
 
@@ -441,23 +489,64 @@
         inputs.forEach(inp => inp.classList.remove('active'));
         input.classList.add('active');
         activeInput = input;
+        lastInteraction = performance.now();
+        logDebug('Input selected', { input: input.id });
       });
     });
 
+    document.addEventListener('click', () => {
+      lastInteraction = performance.now();
+    });
+
+    setInterval(() => {
+      if (gameStarted && performance.now() - lastInteraction > 30000) {
+        const eventData = {
+          pause_duration: 30,
+          reason: 'inactivity',
+          session_id: sessionId
+        };
+        gtag('event', 'game_pause', eventData);
+        logDebug('Game paused', eventData);
+      }
+    }, 30000);
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      const eventData = {
+        message: message,
+        source: source,
+        line: lineno,
+        column: colno,
+        session_id: sessionId
+      };
+      gtag('event', 'javascript_error', eventData);
+      logDebug('JavaScript error', eventData);
+    };
+
     function handleGameAreaClick(event) {
       event.stopPropagation();
+      const rect = document.getElementById('game-area').getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      
+      const eventData = {
+        action: gameStarted && document.getElementById('check-btn').style.display === 'inline-block' ? 'check_answers' : 'reset_game',
+        click_coordinates: JSON.stringify({ x: clickX, y: clickY }),
+        session_id: sessionId,
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'anonymous'
+      };
+      gtag('event', 'game_area_click', eventData);
+      logDebug('Game area clicked', eventData);
+
+      lastInteraction = performance.now();
       if (gameStarted && document.getElementById('check-btn').style.display === 'inline-block') {
-        // Если игра начата и кнопка "Проверить" видима, проверяем ответы
         checkAnswers();
-        gtag('event', 'game_area_click', { 'action': 'check_answers' });
       } else {
-        // В противном случае сбрасываем игру
         resetGame(event);
-        gtag('event', 'game_area_click', { 'action': 'reset_game' });
       }
     }
 
     function startGame() {
+      logDebug('Starting game');
       document.getElementById('start-btn').style.display = 'none';
       const gameArea = document.getElementById('game-area');
       gameArea.innerHTML = '';
@@ -466,6 +555,25 @@
       const matchCountValue = parseInt(matchCountDisplay.textContent);
       const viewTimeValue = parseInt(viewTimeDisplay.textContent) * 1000;
       gameStarted = true;
+      gameStartTime = performance.now();
+
+      const difficulty = calculateDifficulty(matchCountValue, viewTimeValue);
+      
+      const eventData = {
+        match_count: matchCountValue,
+        view_time: viewTimeValue,
+        difficulty: difficulty,
+        session_id: sessionId,
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'anonymous',
+        match_distribution: JSON.stringify({
+          up: 0,
+          down: 0,
+          right: 0,
+          left: 0
+        })
+      };
+      gtag('event', 'game_start', eventData);
+      logDebug('Game started', eventData);
 
       const placedPositions = [];
       for (let i = 0; i < matchCountValue; i++) {
@@ -494,6 +602,13 @@
         if (!validPosition) {
           x = 150;
           y = 150;
+          const errorData = {
+            error_type: 'invalid_position',
+            details: `Match ${i + 1} placed at default position`,
+            session_id: sessionId
+          };
+          gtag('event', 'game_error', errorData);
+          logDebug('Game error', errorData);
         }
 
         const zIndex = Math.floor(Math.random() * matchCountValue);
@@ -529,14 +644,20 @@
         placedPositions.push({ x, y });
       }
 
-      gtag('event', 'game_start', { 'match_count': matchCountValue, 'view_time': viewTimeValue });
-
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
+        logDebug('Matches hidden, ready for answers');
       }, viewTimeValue);
+    }
+
+    function calculateDifficulty(matchCount, viewTime) {
+      const score = matchCount / viewTime * 1000;
+      const difficulty = score < 2 ? 'easy' : score < 5 ? 'medium' : 'hard';
+      logDebug('Calculated difficulty', { matchCount, viewTime, difficulty });
+      return difficulty;
     }
 
     function toggleSettings() {
@@ -548,8 +669,11 @@
       } else {
         settingsPanel.style.display = 'flex';
         settingsBtn.textContent = 'Настройки (вкл)';
-        gtag('event', 'view_settings');
+        const eventData = { session_id: sessionId };
+        gtag('event', 'view_settings', eventData);
+        logDebug('Settings panel toggled', eventData);
       }
+      lastInteraction = performance.now();
     }
 
     function toggleKeyboard() {
@@ -563,7 +687,14 @@
         keyboard.style.display = 'none';
         toggleBtn.textContent = 'Клавиатура';
       }
-      gtag('event', 'toggle_keyboard', { 'enabled': keyboardEnabled });
+      const eventData = {
+        enabled: keyboardEnabled,
+        session_id: sessionId
+      };
+      gtag('event', 'toggle_keyboard', eventData);
+      logDebug('Keyboard toggled', eventData);
+      setUserProperties();
+      lastInteraction = performance.now();
     }
 
     function toggleShadow() {
@@ -577,7 +708,14 @@
         shadowBtn.textContent = 'Тень';
         matches.forEach(match => match.classList.remove('with-shadow'));
       }
-      gtag('event', 'toggle_shadow', { 'enabled': shadowEnabled });
+      const eventData = {
+        enabled: shadowEnabled,
+        session_id: sessionId
+      };
+      gtag('event', 'toggle_shadow', eventData);
+      logDebug('Shadow toggled', eventData);
+      setUserProperties();
+      lastInteraction = performance.now();
     }
 
     function addNumber(number) {
@@ -585,12 +723,28 @@
       let currentValue = activeInput.value || '';
       if (currentValue.length < 2) {
         activeInput.value = currentValue + number;
+        const eventData = {
+          key_pressed: number,
+          input_field: activeInput.id,
+          session_id: sessionId
+        };
+        gtag('event', 'keyboard_interaction', eventData);
+        logDebug('Number added', eventData);
       }
+      lastInteraction = performance.now();
     }
 
     function deleteNumber() {
       if (!activeInput) return;
       activeInput.value = activeInput.value.slice(0, -1);
+      const eventData = {
+        key_pressed: 'delete',
+        input_field: activeInput.id,
+        session_id: sessionId
+      };
+      gtag('event', 'keyboard_interaction', eventData);
+      logDebug('Number deleted', eventData);
+      lastInteraction = performance.now();
     }
 
     function toggleRules() {
@@ -599,11 +753,26 @@
         rules.style.display = 'none';
       } else {
         rules.style.display = 'block';
-        gtag('event', 'view_rules');
+        const eventData = { session_id: sessionId };
+        gtag('event', 'view_rules', eventData);
+        logDebug('Rules toggled', eventData);
       }
+      lastInteraction = performance.now();
+    }
+
+    function trackAchievement(achievementType, matchCount, viewTime) {
+      const eventData = {
+        achievement_type: achievementType,
+        match_count: matchCount,
+        view_time: viewTime,
+        session_id: sessionId
+      };
+      gtag('event', 'achievement_unlocked', eventData);
+      logDebug('Achievement unlocked', eventData);
     }
 
     function checkAnswers() {
+      logDebug('Checking answers');
       const up = parseInt(document.getElementById('up').value) || 0;
       const down = parseInt(document.getElementById('down').value) || 0;
       const right = parseInt(document.getElementById('right').value) || 0;
@@ -614,6 +783,19 @@
         down: matches.filter(d => d === 'down').length,
         right: matches.filter(d => d === 'right').length,
         left: matches.filter(d => d === 'left').length
+      };
+
+      const correctCount = (up === actual.up ? 1 : 0) + 
+                          (down === actual.down ? 1 : 0) + 
+                          (right === actual.right ? 1 : 0) + 
+                          (left === actual.left ? 1 : 0);
+      const totalMatches = matches.length;
+      const duration = Math.round((performance.now() - gameStartTime) / 1000);
+      const errorMagnitude = {
+        up: Math.abs(up - actual.up),
+        down: Math.abs(down - actual.down),
+        right: Math.abs(right - actual.right),
+        left: Math.abs(left - actual.left)
       };
 
       document.getElementById('feedback-up').innerHTML = `<span class="${up === actual.up ? 'correct' : 'incorrect'}">${actual.up}</span>`;
@@ -639,14 +821,41 @@
         gameArea.appendChild(match);
       });
 
-      gtag('event', 'check_answers');
+      const checkEventData = {
+        correct_count: correctCount,
+        user_answers: JSON.stringify({ up, down, right, left }),
+        actual_answers: JSON.stringify(actual),
+        error_magnitude: JSON.stringify(errorMagnitude),
+        session_id: sessionId,
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'anonymous'
+      };
+      gtag('event', 'check_answers', checkEventData);
+      logDebug('Answers checked', checkEventData);
+
+      const completeEventData = {
+        correct_answers: correctCount,
+        total_matches: totalMatches,
+        duration: duration,
+        match_distribution: JSON.stringify(actual),
+        session_id: sessionId,
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'anonymous'
+      };
+      gtag('event', 'game_complete', completeEventData);
+      logDebug('Game completed', completeEventData);
+
+      if (correctCount === 4) {
+        trackAchievement('perfect_score', totalMatches, viewTime / 1000);
+      }
 
       document.getElementById('new-game-btn').style.display = 'inline-block';
       document.getElementById('check-btn').style.display = 'none';
+      lastInteraction = performance.now();
     }
 
     function resetGame(event) {
       event.stopPropagation();
+      restartCount++;
+      logDebug('Resetting game', { restartCount });
       document.getElementById('new-game-btn').style.display = 'none';
       document.getElementById('start-btn').style.display = 'block';
       document.getElementById('check-btn').style.display = 'none';
@@ -659,7 +868,17 @@
       document.getElementById('feedback-right').innerHTML = '';
       document.getElementById('feedback-left').innerHTML = '';
       gameStarted = false;
+
+      const eventData = {
+        restart_count: restartCount,
+        session_id: sessionId,
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'anonymous'
+      };
+      gtag('event', 'game_restart', eventData);
+      logDebug('Game restarted', eventData);
+
       startGame();
+      lastInteraction = performance.now();
     }
 
     function changeMatchCount(delta) {
@@ -668,7 +887,17 @@
       
       if (newValue >= 3 && newValue <= 80) {
         matchCountDisplay.textContent = newValue;
+        matchCount = newValue;
+        const eventData = {
+          setting_type: 'match_count',
+          value: newValue,
+          session_id: sessionId
+        };
+        gtag('event', 'change_settings', eventData);
+        logDebug('Match count changed', eventData);
+        setUserProperties();
       }
+      lastInteraction = performance.now();
     }
 
     function changeViewTime(delta) {
@@ -677,7 +906,17 @@
       
       if (newValue >= 1 && newValue <= 10) {
         viewTimeDisplay.textContent = newValue + ' сек';
+        viewTime = newValue * 1000;
+        const eventData = {
+          setting_type: 'view_time',
+          value: newValue,
+          session_id: sessionId
+        };
+        gtag('event', 'change_settings', eventData);
+        logDebug('View time changed', eventData);
+        setUserProperties();
       }
+      lastInteraction = performance.now();
     }
 
     function changeAnswer(direction, delta) {
@@ -687,7 +926,9 @@
       
       if (newValue >= 0 && newValue <= 80) {
         input.value = newValue;
+        logDebug('Answer changed', { direction, delta, newValue });
       }
+      lastInteraction = performance.now();
     }
 
     window.Telegram.WebApp.expand();
