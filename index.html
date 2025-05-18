@@ -132,29 +132,15 @@
       background: #606060;
       color: #D3D3D3;
       border: 1px solid #808080;
+      width: 80px;
+      text-align: center;
     }
     #new-game-btn {
       display: none;
       margin: 0 10px;
     }
-    #shadow-btn {
+    #settings-btn {
       margin: 0 10px;
-    }
-    #rules-btn {
-      margin-left: 50px;
-    }
-    #match-count-container {
-      margin-right: 50px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    #match-count-container button {
-      padding: 5px 10px;
-      width: 30px;
-      height: 30px;
-      font-size: 16px;
-      line-height: 1;
     }
     #controls-container {
       margin: 10px auto;
@@ -211,11 +197,44 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 5px;
     }
+    #settings-panel {
+      margin: 10px auto;
+      width: 300px;
+      background: #2C3536;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #settings-panel .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+    }
+    #settings-panel .setting-row label {
+      flex: 1;
+      text-align: left;
+      padding-right: 10px;
+    }
+    #settings-panel .setting-row button,
+    #settings-panel .setting-row select {
+      flex: 1;
+      max-width: 150px;
+    }
+    #settings-panel .setting-row .input-container {
+      flex: 1;
+      max-width: 150px;
+      display: flex;
+      gap: 5px;
+    }
     #custom-keyboard .spacer {
       visibility: hidden;
     }
-    #custom-keyboard button {
-      padding: 15px;
+    #custom-keyboard button,
+    #settings-panel button {
+      padding: 10px;
       font-size: 16px;
       background: #606060;
       color: #D3D3D3;
@@ -223,7 +242,8 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    #custom-keyboard button:hover {
+    #custom-keyboard button:hover,
+    #settings-panel button:hover {
       background: #808080;
     }
     #custom-keyboard .delete-btn {
@@ -303,24 +323,48 @@
     <button onclick="checkAnswers()">ОК</button>
   </div>
   <div id="controls-container">
-    <button id="rules-btn" onclick="toggleRules()">Правила</button>
-    <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
-    <div id="match-count-container">
-        <label for="match-count">Количество спичек: </label>
+    <button id="settings-btn" onclick="toggleSettings()">Настройки</button>
+  </div>
+  <div id="settings-panel">
+    <div class="setting-row">
+      <label>Клавиатура:</label>
+      <button id="toggle-keyboard-btn" onclick="toggleKeyboard()">Клавиатура (вкл)</button>
+    </div>
+    <div class="setting-row">
+      <label>Тень:</label>
+      <button id="shadow-btn" onclick="toggleShadow()">Тень</button>
+    </div>
+    <div class="setting-row">
+      <label>Правила:</label>
+      <button onclick="toggleRules()">Правила</button>
+    </div>
+    <div class="setting-row">
+      <label>Количество спичек:</label>
+      <div class="input-container">
         <button onclick="changeMatchCount(-1)">−</button>
         <select id="match-count"></select>
         <button onclick="changeMatchCount(1)">+</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <label>Время созерцания:</label>
+      <div class="input-container">
+        <button onclick="changeViewTime(-1)">−</button>
+        <select id="view-time"></select>
+        <button onclick="changeViewTime(1)">+</button>
+      </div>
     </div>
   </div>
   <div id="rules">
     <button id="close-rules-btn" onclick="toggleRules()">Закрыть</button>
     <div id="rules-content">
       <p><strong>Правила игры:</strong></p>
-      <p>1. Выбери количество спичек и нажми "Начать".</p>
-      <p>2. Запомни направления спичек за 3 секунды.</p>
-      <p>3. Укажи, сколько головок смотрит вверх, вниз, вправо, влево.</p>
-      <p>4. Нажми "Проверить" для результата.</p>
-      <p>5. Кликни по полю для новой игры.</p>
+      <p>1. Выбери количество спичек и время созерцания в настройках.</p>
+      <p>2. Нажми "Начать".</p>
+      <p>3. Запомни направления спичек за отведенное время.</p>
+      <p>4. Укажи, сколько головок смотрит вверх, вниз, вправо, влево.</p>
+      <p>5. Нажми "Проверить" для результата.</p>
+      <p>6. Кликни по полю для новой игры.</p>
       <p><strong>Направления спичек:</strong></p>
       <p>Головка (красный круг) указывает направление по часовой системе:</p>
       <pre>
@@ -365,6 +409,7 @@
     let gameStarted = false;
     let activeInput = null;
     let shadowEnabled = false;
+    let keyboardEnabled = true;
 
     const matchCountSelect = document.getElementById('match-count');
     for (let i = 3; i <= 80; i++) {
@@ -373,6 +418,15 @@
       option.text = i;
       if (i === 3) option.selected = true;
       matchCountSelect.appendChild(option);
+    }
+
+    const viewTimeSelect = document.getElementById('view-time');
+    for (let i = 1; i <= 10; i++) {
+      const option = document.createElement('option');
+      option.value = i * 1000;
+      option.text = i + ' сек';
+      if (i === 3) option.selected = true;
+      viewTimeSelect.appendChild(option);
     }
 
     const inputs = document.querySelectorAll('#result-panel input');
@@ -384,8 +438,6 @@
       });
     });
 
-    document.getElementById('shadow-btn').textContent = 'Тень';
-
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
       const gameArea = document.getElementById('game-area');
@@ -393,6 +445,7 @@
       matches = [];
       matchPositions = [];
       const matchCount = parseInt(matchCountSelect.value);
+      const viewTime = parseInt(viewTimeSelect.value);
       gameStarted = true;
 
       const placedPositions = [];
@@ -457,14 +510,41 @@
         placedPositions.push({ x, y });
       }
 
-      gtag('event', 'game_start', { 'match_count': matchCount });
+      gtag('event', 'game_start', { 'match_count': matchCount, 'view_time': viewTime });
 
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
-      }, 3000);
+      }, viewTime);
+    }
+
+    function toggleSettings() {
+      const settingsPanel = document.getElementById('settings-panel');
+      const settingsBtn = document.getElementById('settings-btn');
+      if (settingsPanel.style.display === 'flex') {
+        settingsPanel.style.display = 'none';
+        settingsBtn.textContent = 'Настройки';
+      } else {
+        settingsPanel.style.display = 'flex';
+        settingsBtn.textContent = 'Настройки (вкл)';
+        gtag('event', 'view_settings');
+      }
+    }
+
+    function toggleKeyboard() {
+      keyboardEnabled = !keyboardEnabled;
+      const keyboard = document.getElementById('custom-keyboard');
+      const toggleBtn = document.getElementById('toggle-keyboard-btn');
+      if (keyboardEnabled) {
+        keyboard.style.display = 'grid';
+        toggleBtn.textContent = 'Клавиатура (вкл)';
+      } else {
+        keyboard.style.display = 'none';
+        toggleBtn.textContent = 'Клавиатура';
+      }
+      gtag('event', 'toggle_keyboard', { 'enabled': keyboardEnabled });
     }
 
     function toggleShadow() {
@@ -569,6 +649,16 @@
       let newValue = currentValue + delta;
       
       if (newValue >= 3 && newValue <= 80) {
+        select.value = newValue;
+      }
+    }
+
+    function changeViewTime(delta) {
+      const select = document.getElementById('view-time');
+      let currentValue = parseInt(select.value);
+      let newValue = currentValue + delta * 1000;
+      
+      if (newValue >= 1000 && newValue <= 10000) {
         select.value = newValue;
       }
     }
