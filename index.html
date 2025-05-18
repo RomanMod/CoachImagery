@@ -282,7 +282,7 @@
     <button id="check-btn" onclick="checkAnswers()">Проверить</button>
     <button id="new-game-btn" onclick="resetGame(event)">Новая игра</button>
   </div>
-  <div id="game-area" onclick="resetGame(event)"></div>
+  <div id="game-area" onclick="handleGameAreaClick(event)"></div>
   <button id="start-btn" onclick="startGame()">Начать</button>
   <div id="result-panel">
     <div id="question">Сколько спичек?</div>
@@ -378,8 +378,8 @@
       <p>2. Нажми "Начать".</p>
       <p>3. Запомни направления спичек за отведенное время.</p>
       <p>4. Укажи, сколько головок смотрит вверх, вниз, вправо, влево.</p>
-      <p>5. Нажми "Проверить" для результата.</p>
-      <p>6. Кликни по полю для новой игры.</p>
+      <p>5. Нажми "Проверить" или кликни по полю для проверки результата.</p>
+      <p>6. Нажми "Новая игра" или кликни по полю для новой игры.</p>
       <p><strong>Направления спичек:</strong></p>
       <p>Головка (красный круг) указывает направление по часовой системе:</p>
       <pre>
@@ -443,6 +443,19 @@
         activeInput = input;
       });
     });
+
+    function handleGameAreaClick(event) {
+      event.stopPropagation();
+      if (gameStarted && document.getElementById('check-btn').style.display === 'inline-block') {
+        // Если игра начата и кнопка "Проверить" видима, проверяем ответы
+        checkAnswers();
+        gtag('event', 'game_area_click', { 'action': 'check_answers' });
+      } else {
+        // В противном случае сбрасываем игру
+        resetGame(event);
+        gtag('event', 'game_area_click', { 'action': 'reset_game' });
+      }
+    }
 
     function startGame() {
       document.getElementById('start-btn').style.display = 'none';
