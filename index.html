@@ -126,7 +126,7 @@
       padding: 5px;
       width: 50px;
       text-align: center;
-      -moz-appearance: textfield; /* Для Firefox */
+      -moz-appearance: textfield;
     }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
@@ -266,6 +266,15 @@
       margin-bottom: 5px;
       text-align: center;
     }
+    .custom-select {
+      background: #606060;
+      color: #D3D3D3;
+      border: 1px solid #808080;
+      padding: 5px;
+      width: 50px;
+      text-align: center;
+      line-height: 20px;
+    }
   </style>
 </head>
 <body>
@@ -348,7 +357,7 @@
       <label>Количество спичек:</label>
       <div class="input-container">
         <button onclick="changeMatchCount(-1)">−</button>
-        <select id="match-count"></select>
+        <div id="match-count" class="custom-select">3</div>
         <button onclick="changeMatchCount(1)">+</button>
       </div>
     </div>
@@ -356,7 +365,7 @@
       <label>Время созерцания:</label>
       <div class="input-container">
         <button onclick="changeViewTime(-1)">−</button>
-        <select id="view-time"></select>
+        <div id="view-time" class="custom-select">3 сек</div>
         <button onclick="changeViewTime(1)">+</button>
       </div>
     </div>
@@ -416,24 +425,15 @@
     let activeInput = null;
     let shadowEnabled = false;
     let keyboardEnabled = true;
+    let matchCount = 3; // Начальное значение количества спичек
+    let viewTime = 3000; // Начальное значение времени созерцания (в миллисекундах)
 
-    const matchCountSelect = document.getElementById('match-count');
-    for (let i = 3; i <= 80; i++) {
-      const option = document.createElement('option');
-      option.value = i;
-      option.text = i;
-      if (i === 3) option.selected = true;
-      matchCountSelect.appendChild(option);
-    }
+    const matchCountDisplay = document.getElementById('match-count');
+    const viewTimeDisplay = document.getElementById('view-time');
 
-    const viewTimeSelect = document.getElementById('view-time');
-    for (let i = 1; i <= 10; i++) {
-      const option = document.createElement('option');
-      option.value = i * 1000;
-      option.text = i + ' сек';
-      if (i === 3) option.selected = true;
-      viewTimeSelect.appendChild(option);
-    }
+    // Инициализация начальных значений
+    matchCountDisplay.textContent = matchCount;
+    viewTimeDisplay.textContent = viewTime / 1000 + ' сек';
 
     const inputs = document.querySelectorAll('#result-panel input');
     inputs.forEach(input => {
@@ -450,12 +450,12 @@
       gameArea.innerHTML = '';
       matches = [];
       matchPositions = [];
-      const matchCount = parseInt(matchCountSelect.value);
-      const viewTime = parseInt(viewTimeSelect.value);
+      const matchCountValue = parseInt(matchCountDisplay.textContent);
+      const viewTimeValue = parseInt(viewTimeDisplay.textContent) * 1000;
       gameStarted = true;
 
       const placedPositions = [];
-      for (let i = 0; i < matchCount; i++) {
+      for (let i = 0; i < matchCountValue; i++) {
         let x, y, angle, validPosition = false;
 
         for (let attempt = 0; attempt < 50; attempt++) {
@@ -483,7 +483,7 @@
           y = 150;
         }
 
-        const zIndex = Math.floor(Math.random() * matchCount);
+        const zIndex = Math.floor(Math.random() * matchCountValue);
         const match = document.createElement('div');
         match.className = 'match';
         if (shadowEnabled) match.classList.add('with-shadow');
@@ -516,14 +516,14 @@
         placedPositions.push({ x, y });
       }
 
-      gtag('event', 'game_start', { 'match_count': matchCount, 'view_time': viewTime });
+      gtag('event', 'game_start', { 'match_count': matchCountValue, 'view_time': viewTimeValue });
 
       setTimeout(() => {
         gameArea.innerHTML = '';
         document.getElementById('check-btn').style.display = 'inline-block';
         activeInput = document.getElementById('up');
         activeInput.classList.add('active');
-      }, viewTime);
+      }, viewTimeValue);
     }
 
     function toggleSettings() {
@@ -650,22 +650,20 @@
     }
 
     function changeMatchCount(delta) {
-      const select = document.getElementById('match-count');
-      let currentValue = parseInt(select.value);
+      let currentValue = parseInt(matchCountDisplay.textContent);
       let newValue = currentValue + delta;
       
       if (newValue >= 3 && newValue <= 80) {
-        select.value = newValue;
+        matchCountDisplay.textContent = newValue;
       }
     }
 
     function changeViewTime(delta) {
-      const select = document.getElementById('view-time');
-      let currentValue = parseInt(select.value);
-      let newValue = currentValue + delta * 1000;
+      let currentValue = parseInt(viewTimeDisplay.textContent);
+      let newValue = currentValue + delta;
       
-      if (newValue >= 1000 && newValue <= 10000) {
-        select.value = newValue;
+      if (newValue >= 1 && newValue <= 10) {
+        viewTimeDisplay.textContent = newValue + ' сек';
       }
     }
 
