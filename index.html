@@ -275,6 +275,60 @@
       text-align: center;
       line-height: 20px;
     }
+    /* Светлая тема */
+    body.light-theme {
+      background: #F5F5F5;
+      color: #333333;
+    }
+    .light-theme #game-area {
+      background: #FFFFFF;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme button {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme button:hover {
+      background: #45A049;
+    }
+    .light-theme input[type="number"] {
+      background: #FFFFFF;
+      color: #333333;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme select,
+    .light-theme .custom-select {
+      background: #FFFFFF;
+      color: #333333;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme #custom-keyboard,
+    .light-theme #settings-panel {
+      background: #E0E0E0;
+    }
+    .light-theme #custom-keyboard button,
+    .light-theme #settings-panel button {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme #custom-keyboard button:hover,
+    .light-theme #settings-panel button:hover {
+      background: #45A049;
+    }
+    .light-theme #rules {
+      background: #F5F5F5;
+    }
+    .light-theme #rules-content {
+      background: #FFFFFF;
+      color: #333333;
+    }
+    .light-theme #close-rules-btn {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme #close-rules-btn:hover {
+      background: #45A049;
+    }
   </style>
 </head>
 <body>
@@ -330,8 +384,6 @@
     <button onclick="addNumber('4')">4</button>
     <button onclick="addNumber('5')">5</button>
     <button onclick="addNumber('6')">6</button>
-    <button onclick="addNumberongono
-
     <button onclick="addNumber('7')">7</button>
     <button onclick="addNumber('8')">8</button>
     <button onclick="addNumber('9')">9</button>
@@ -370,6 +422,10 @@
         <div id="view-time" class="custom-select">3 сек</div>
         <button onclick="changeViewTime(1)">+</button>
       </div>
+    </div>
+    <div class="setting-row">
+      <label>Тема:</label>
+      <button id="theme-btn" onclick="toggleTheme()">Ночь</button>
     </div>
   </div>
   <div id="rules">
@@ -443,6 +499,7 @@
     let sessionId = generateSessionId();
     let gameStartTime = null;
     let lastInteraction = performance.now();
+    let isDarkTheme = true; // По умолчанию тёмная тема
 
     const matchCountDisplay = document.getElementById('match-count');
     const viewTimeDisplay = document.getElementById('view-time');
@@ -462,7 +519,8 @@
         shadow_preference: shadowEnabled ? 'on' : 'off',
         keyboard_preference: keyboardEnabled ? 'on' : 'off',
         average_match_count: matchCount,
-        average_view_time: viewTime / 1000
+        average_view_time: viewTime / 1000,
+        theme_preference: isDarkTheme ? 'dark' : 'light'
       };
       gtag('set', 'user_properties', properties);
       logDebug('Set user properties', properties);
@@ -714,6 +772,29 @@
       };
       gtag('event', 'toggle_shadow', eventData);
       logDebug('Shadow toggled', eventData);
+      setUserProperties();
+      lastInteraction = performance.now();
+    }
+
+    function toggleTheme() {
+      isDarkTheme = !isDarkTheme;
+      const themeBtn = document.getElementById('theme-btn');
+      const body = document.body;
+      
+      if (isDarkTheme) {
+        body.classList.remove('light-theme');
+        themeBtn.textContent = 'Ночь';
+      } else {
+        body.classList.add('light-theme');
+        themeBtn.textContent = 'День';
+      }
+
+      const eventData = {
+        enabled: isDarkTheme ? 'dark' : 'light',
+        session_id: sessionId
+      };
+      gtag('event', 'toggle_theme', eventData);
+      logDebug('Theme toggled', eventData);
       setUserProperties();
       lastInteraction = performance.now();
     }
