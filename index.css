@@ -1,0 +1,332 @@
+ @font-face {
+      font-family: 'Noto Emoji';
+      src: url('https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap');
+    }
+    body {
+      text-align: center;
+      font-family: Arial, 'Noto Emoji', sans-serif;
+      margin: 10px;
+      background: #1C2526;
+      color: #D3D3D3;
+      min-height: 100vh;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #game-area {
+      width: 300px;
+      height: 300px;
+      background: #666666;
+      border: 1px solid #606060;
+      position: relative;
+      margin: 10px auto;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 8px;
+    }
+    .match {
+      position: absolute;
+      width: 55px;
+      height: 5px;
+      background: #DAA520;
+      border: 1px solid #8B4513;
+      transform-origin: center;
+      border-radius: 2px;
+    }
+    .match.with-shadow {
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    .match-head {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #FF4040;
+      border-radius: 50%;
+      right: -5px;
+      top: -2.5px;
+    }
+    #result-panel {
+      width: 300px;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 100px 160px 40px;
+      gap: 0;
+    }
+    #question {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 0px;
+    }
+    .result-row {
+      display: contents;
+    }
+    .result-row label {
+      text-align: right;
+      white-space: nowrap;
+      padding: 5px 5px 5px 0;
+    }
+    .result-row .input-container {
+      padding: 5px 5px 5px 0;
+    }
+    .result-row .arrow {
+      font-size: 34px;
+      vertical-align: middle;
+      color: #DAA520;
+    }
+    .result-row .feedback {
+      text-align: left;
+      padding: 10px;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 160px;
+    }
+    .input-container button {
+      padding: 5px 10px;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .input-container input {
+      margin-right: 0;
+    }
+    .correct { color: #00FF00; }
+    .incorrect { color: #FF0000; }
+    button {
+      padding: 10px 20px;
+      background: #606060;
+      color: #D3D3D3;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #808080;
+    }
+    #check-btn {
+      display: none;
+    }
+    input[type="number"] {
+      background: #606060;
+      color: #FFFFFF;
+      border: 1px solid #808080;
+      padding: 5px;
+      width: 50px;
+      text-align: center;
+      -moz-appearance: textfield;
+      border-radius: 5px;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    select {
+      padding: 5px;
+      background: #606060;
+      color: #D3D3D3;
+      border: 1px solid #808080;
+      width: 80px;
+      text-align: center;
+      border-radius: 5px;
+    }
+    #new-game-btn {
+      display: none;
+      margin: 0 10px;
+    }
+    #settings-btn {
+      margin: 0 10px;
+    }
+    #controls-container {
+      margin: 48px auto 10px;
+      text-align: center;
+      width: 300px;
+    }
+    #rules {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #2C3536;
+      padding: 20px;
+      text-align: center;
+      font-size: 16px;
+      color: #D3D3D3;
+      overflow-y: auto;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+    #rules-content {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: left;
+      padding: 20px;
+      background: #3A4445;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    #close-rules-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #808080;
+      color: #D3D3D3;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #close-rules-btn:hover {
+      background: #A0A0A0;
+    }
+    #custom-keyboard {
+      margin: 10px auto;
+      width: 300px;
+      background: #2C3536;
+      padding: 10px;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+    #settings-panel {
+      margin: 10px auto;
+      width: 300px;
+      background: #2C3536;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #settings-panel .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+    }
+    #settings-panel .setting-row label {
+      flex: 1;
+      text-align: left;
+      padding-right: 10px;
+    }
+    #settings-panel .setting-row button,
+    #settings-panel .setting-row select {
+      flex: 1;
+      max-width: 150px;
+    }
+    #settings-panel .setting-row .input-container {
+      flex: 1;
+      max-width: 150px;
+      display: flex;
+      gap: 5px;
+    }
+    #custom-keyboard .spacer {
+      visibility: hidden;
+    }
+    #custom-keyboard button,
+    #settings-panel button {
+      padding: 10px;
+      font-size: 16px;
+      background: #606060;
+      color: #D3D3D3;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #custom-keyboard button:hover,
+    #settings-panel button:hover {
+      background: #808080;
+    }
+    #custom-keyboard .delete-btn {
+      background: #606060;
+    }
+    #custom-keyboard .delete-btn:hover {
+      background: #808080;
+    }
+    input.active {
+      border: 2px solid #DAA520;
+      border-radius: 5px;
+    }
+    #button-container {
+      height: 40px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    .custom-select {
+      background: #606060;
+      color: #D3D3D3;
+      border: 1px solid #808080;
+      padding: 5px;
+      width: 50px;
+      text-align: center;
+      line-height: 20px;
+      border-radius: 5px;
+    }
+    body.light-theme {
+      background: #F5F5F5;
+      color: #333333;
+    }
+    .light-theme #game-area {
+      background: #FFFFFF;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme button {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme button:hover {
+      background: #45A049;
+    }
+    .light-theme input[type="number"] {
+      background: #FFFFFF;
+      color: #333333;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme select,
+    .light-theme .custom-select {
+      background: #FFFFFF;
+      color: #333333;
+      border: 1px solid #CCCCCC;
+    }
+    .light-theme #custom-keyboard,
+    .light-theme #settings-panel {
+      background: #E0E0E0;
+    }
+    .light-theme #custom-keyboard button,
+    .light-theme #settings-panel button {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme #custom-keyboard button:hover,
+    .light-theme #settings-panel button:hover {
+      background: #45A049;
+    }
+    .light-theme #rules {
+      background: #F5F5F5;
+    }
+    .light-theme #rules-content {
+      background: #FFFFFF;
+      color: #333333;
+    }
+    .light-theme #close-rules-btn {
+      background: #4CAF50;
+      color: #FFFFFF;
+    }
+    .light-theme #close-rules-btn:hover {
+      background: #45A049;
+    }
+    .light-theme .result-row .arrow {
+      color: #4CAF50;
+    }
