@@ -82,14 +82,13 @@
       <button type="button" id="toggle-keyboard-btn">Клавиатура (вкл)</button>
     </div>
     <div class="setting-row">
-      <label for="language-select">Язык:</label>
-      <select id="language-select">
-        <option value="ru">Русский</option>
-        <option value="uk">Українська</option>
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="symbols">👽</option>
-      </select>
+      <label for="language-select-container">Язык:</label>
+      <div id="language-select-container" class="custom-dropdown">
+        <div id="language-select-selected" class="custom-dropdown-selected" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false"></div>
+        <div id="language-select-options" class="custom-dropdown-options" role="listbox" style="display: none;">
+          <!-- Options will be populated by JS -->
+        </div>
+      </div>
     </div>
     <div class="setting-row">
       <label>Тень:</label>

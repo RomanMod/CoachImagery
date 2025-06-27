@@ -24,6 +24,14 @@ let lastInteraction = performance.now();
 let isDarkTheme = true;
 let currentLanguage = 'uk';
 
+const languageMap = {
+  ru: 'Русский',
+  uk: 'Українська',
+  en: 'English',
+  es: 'Español',
+  symbols: '👽'
+};
+
 // Declare element variables, assign in DOMContentLoaded
 let matchCountDisplay;
 let viewTimeDisplay;
@@ -299,7 +307,6 @@ function toggleTheme() {
 }
 
 function changeLanguage() {
-  currentLanguage = document.getElementById('language-select').value;
   logDebug('Language changed', { language: currentLanguage });
   
   const t = translations[currentLanguage];
@@ -564,8 +571,14 @@ function changeAnswer(direction, delta) {
 
 // --- Initializers and Event Listeners ---
 
-document.addEventListener('click', () => {
-  lastInteraction = performance.now();
+document.addEventListener('click', (e) => {
+    lastInteraction = performance.now();
+    // Close language dropdown if open and click is outside
+    const languageSelectOptions = document.getElementById('language-select-options');
+    if (languageSelectOptions.style.display === 'block' && !e.target.closest('#language-select-container')) {
+        languageSelectOptions.style.display = 'none';
+        document.getElementById('language-select-selected').setAttribute('aria-expanded', 'false');
+    }
 });
 
 setInterval(() => {
@@ -602,7 +615,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
 
     // Apply visual states before updating text
-    document.getElementById('language-select').value = currentLanguage;
     matchCountDisplay.textContent = matchCount;
     
     if (!isDarkTheme) {
@@ -653,10 +665,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Settings panel controls
     document.getElementById('settings-btn').addEventListener('click', toggleSettings);
     document.getElementById('toggle-keyboard-btn').addEventListener('click', toggleKeyboard);
-    document.getElementById('language-select').addEventListener('change', changeLanguage);
     document.getElementById('shadow-btn').addEventListener('click', toggleShadow);
     document.getElementById('rules-btn').addEventListener('click', toggleRules);
     document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+
+    // --- Custom Language Dropdown Setup ---
+    const languageSelectSelected = document.getElementById('language-select-selected');
+    const languageSelectOptions = document.getElementById('language-select-options');
+
+    // Populate options
+    Object.keys(languageMap).forEach(langCode => {
+        const option = document.createElement('div');
+        option.classList.add('option');
+        option.dataset.value = langCode;
+        option.textContent = languageMap[langCode];
+        option.addEventListener('click', () => {
+            currentLanguage = langCode;
+            languageSelectSelected.textContent = languageMap[langCode];
+            languageSelectOptions.style.display = 'none';
+            languageSelectSelected.setAttribute('aria-expanded', 'false');
+            changeLanguage(); // Update all text and save settings
+        });
+        languageSelectOptions.appendChild(option);
+    });
+    
+    // Set initial value from loaded settings
+    languageSelectSelected.textContent = languageMap[currentLanguage];
+    
+    // Toggle dropdown
+    languageSelectSelected.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpening = languageSelectOptions.style.display === 'none';
+        languageSelectOptions.style.display = isOpening ? 'block' : 'none';
+        languageSelectSelected.setAttribute('aria-expanded', isOpening);
+    });
     
     // Settings value changers
     document.querySelectorAll('[data-change-match-count]').forEach(button => {
